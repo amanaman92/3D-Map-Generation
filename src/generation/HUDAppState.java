@@ -5,8 +5,8 @@ import com.jme3.app.state.BaseAppState;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
+import com.jme3.scene.Node;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 
 /**
  * This class control I / O and display for the HUD (GUI).
@@ -17,7 +17,7 @@ public class HUDAppState extends BaseAppState
     private Main main;
     private Node guiNode;
     private BitmapFont guiFont;
-    private static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
+    private Dimension screenSize;
 
     /**
      * This function does basic initialiation of the AppState.
@@ -30,6 +30,7 @@ public class HUDAppState extends BaseAppState
         main = Main.getMain();
         guiNode = main.getGuiNode();
         guiFont = main.getGuiFont();
+        screenSize = main.getScreenSize();
         createMainMenu();
     }
     
@@ -40,7 +41,7 @@ public class HUDAppState extends BaseAppState
         hpText.setSize(guiFont.getCharSet().getRenderedSize());
         hpText.setColor(ColorRGBA.Red);
         hpText.setSize(50);
-        hpText.setLocalTranslation(SCREEN_SIZE.width / 2, SCREEN_SIZE.height / 2, 0);
+        hpText.setLocalTranslation(screenSize.width / 2, screenSize.height / 2, 0);
         guiNode.attachChild(hpText);
     }
 

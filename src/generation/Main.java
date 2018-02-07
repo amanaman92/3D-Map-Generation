@@ -14,6 +14,8 @@ import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 
 /**
  * This class contains basic data needed by the entire game.
@@ -29,6 +31,7 @@ public class Main extends SimpleApplication
             HUD_APP_STATE = new HUDAppState();
     private final BulletAppState BULLET_APP_STATE = new BulletAppState();
     private TerrainQuad terrain;
+    private static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
     
     private final int MAP_SIZE = 1024;
     
@@ -166,5 +169,13 @@ public class Main extends SimpleApplication
     public static Main getMain()
     {
         return MAIN;
+    }
+    
+    /**
+     * @return A Dimension object contianing the size of the screen
+     */
+    public Dimension getScreenSize()
+    {
+        return SCREEN_SIZE;
     }
 }
