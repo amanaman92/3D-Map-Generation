@@ -20,6 +20,9 @@ public class MapAppState extends BaseAppState
     private Main main;
     private Node rootNode;
     private ViewPort viewPort;
+    private final AmbientLight AMBIENT_LIGHT = new AmbientLight();
+    private final DirectionalLight DIRECTIONAL_LIGHT = new DirectionalLight();
+    
     /**
      * This function does basic initialiation of the AppState.
      *      Not called directly from user code.
@@ -88,15 +91,13 @@ public class MapAppState extends BaseAppState
      */
     private void initLight() 
     {
-        AmbientLight ambientLight = new AmbientLight();
-        ambientLight.setColor(ColorRGBA.White.mult(1.3f));
+        AMBIENT_LIGHT.setColor(ColorRGBA.White.mult(1.3f));
         
-        DirectionalLight directionalLight = new DirectionalLight();
-        directionalLight.setDirection(new Vector3f(-1, -1, 0));
-        directionalLight.setColor(ColorRGBA.White);
+        DIRECTIONAL_LIGHT.setDirection(new Vector3f(-1, -1, 0));
+        DIRECTIONAL_LIGHT.setColor(ColorRGBA.White);
         
-        rootNode.addLight(ambientLight);
-        rootNode.addLight(directionalLight);
+        rootNode.addLight(AMBIENT_LIGHT);
+        rootNode.addLight(DIRECTIONAL_LIGHT);
     }
     
     /**

@@ -8,6 +8,7 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.font.BitmapFont;
 import com.jme3.material.Material;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Node;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
@@ -68,6 +69,7 @@ public class Main extends SimpleApplication
         
         initGUI();
         generateProceduralMap();
+        initCamera();
     }
     
     private void initGUI()
@@ -131,7 +133,12 @@ public class Main extends SimpleApplication
         terrain.addControl(mapBody);
         rootNode.attachChild(terrain);
         BULLET_APP_STATE.getPhysicsSpace().add(mapBody);
-        
+    }
+    
+    private void initCamera()
+    {
+        flyCam.setMoveSpeed(100);
+        cam.setLocation(new Vector3f(0, 128, 0));
     }
 
     /**

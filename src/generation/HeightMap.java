@@ -8,18 +8,50 @@ package generation;
  */
 public class HeightMap
 {
-    private final float[] heightData;
-    
+    private final float[] HEIGHT_DATA;
+    private final BWVector[][] BW_VECTORS;
     private final int MAP_SIZE;
+    private final float BASE_VALUE = .5f;
+    private final float COLOR_MAX = 255;
     
     public HeightMap(int mapSize)
     {
         MAP_SIZE = mapSize;
-        heightData = new float[MAP_SIZE * MAP_SIZE];
+        HEIGHT_DATA = new float[MAP_SIZE * MAP_SIZE];
+        BW_VECTORS = new BWVector[MAP_SIZE][MAP_SIZE];
     }
     
     public void writeHeightMap()
     {
+        //Pass 1: Init all BW Vectors
+        for(int x = 0; x < BW_VECTORS.length; x++)
+        {
+            for(int y = 0; y < BW_VECTORS[x].length; y++)
+            {
+                BW_VECTORS[x][y] = new BWVector(x, y, BASE_VALUE);
+            }
+        }
+        
+        //Pass 2: Features
+        for(int i = 0; i < 20; i++)
+        {
+            BWVector start = new BWVector(RandomUtils.randomInt(0, MAP_SIZE), RandomUtils.randomInt(0, MAP_SIZE), RandomUtils.RANDOM.nextFloat());
+            BWVector end = new BWVector(RandomUtils.randomInt(0, MAP_SIZE), RandomUtils.randomInt(0, MAP_SIZE), RandomUtils.RANDOM.nextFloat());
+            MapEquation mapEq = new MapEquation(start, end);
+
+            for(int x = mapEq.getMinX(); x < mapEq.getMaxX(); x++)
+            {
+                int y = mapEq.pointAt(x);
+                if(y > 0 && y < BW_VECTORS[x].length)
+                {
+                    BW_VECTORS[x][y].setValue(mapEq.valueAt(x));
+                }
+            }
+        }
+
+        //Pass 3: Smooth
+        ColorMath.smooth(BW_VECTORS, 2);
+        
         createHeightData();
     }
     
@@ -32,7 +64,16 @@ public class HeightMap
      */
     private void createHeightData()
     {
-        
+        int index = 0;
+        for(BWVector[] vecRow : BW_VECTORS)
+        {
+            for(BWVector vec : vecRow)
+            {
+                HEIGHT_DATA[index] = vec.getValue() * COLOR_MAX;
+                index++;
+            }
+        }
+           
     }
     
     /**
@@ -41,7 +82,7 @@ public class HeightMap
      */
     public float[] getHeightData()
     {
-        return heightData;
+        return HEIGHT_DATA;
     }
     
     /**

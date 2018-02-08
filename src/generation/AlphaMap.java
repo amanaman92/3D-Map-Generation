@@ -2,6 +2,7 @@ package generation;
 
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture2D;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import jme3tools.converters.ImageToAwt;
@@ -10,6 +11,8 @@ import jme3tools.converters.ImageToAwt;
  * This class serves to build an alpha (texture) map given heightmap data.
  *      The colors in an alpha map tell JME3 which textues to place
  *      and where. Without this, the map would be black.
+ * References:
+ *      https://stackoverflow.com/questions/27071351/change-the-color-of-each-pixel-in-an-image-java
  * @author jeffr
  */
 public class AlphaMap 
@@ -36,6 +39,14 @@ public class AlphaMap
      */
     public void writeAlphaMap()
     {
+        for(int x = 0; x < MAP_SIZE; x++)
+        {
+            for(int y = 0; y < MAP_SIZE; y++)
+            {
+                BUFFERED_IMAGE.setRGB(x, y, Color.RED.getRGB());
+            }
+        }
+        
         createTexture2D();
     }
     
