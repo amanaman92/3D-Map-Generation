@@ -72,6 +72,9 @@ public class Main extends SimpleApplication
         initCamera();
     }
     
+    /**
+     * Set JME3 global GUI variables
+     */
     private void initGUI()
     {
         setDisplayStatView(false);
@@ -139,6 +142,7 @@ public class Main extends SimpleApplication
     {
         flyCam.setMoveSpeed(100);
         cam.setLocation(new Vector3f(0, 128, 0));
+        cam.setFrustumFar(MAP_SIZE * MAP_SIZE);
     }
 
     /**

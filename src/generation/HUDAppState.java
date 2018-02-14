@@ -34,6 +34,9 @@ public class HUDAppState extends BaseAppState
         createMainMenu();
     }
     
+    /**
+     * Creates the main menu, where most or all UI elements should be placed
+     */
     private void createMainMenu()
     {
         BitmapText hpText = new BitmapText(guiFont, false);

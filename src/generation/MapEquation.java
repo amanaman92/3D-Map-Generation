@@ -11,7 +11,7 @@ import com.jme3.math.FastMath;
 public class MapEquation 
 {
     private final FallOffMode FALL_OFF;
-    private final BWVector START,
+    private final HeightVector START,
             END;
     private final float SLOPE,
             Y_INTERCEPT,
@@ -26,7 +26,7 @@ public class MapEquation
      * @param start The BWVector at one end of the line
      * @param end The BWVector at the other end of the line
      */
-    public MapEquation(BWVector start, BWVector end)
+    public MapEquation(HeightVector start, HeightVector end)
     {
         this(start, end, FallOffMode.LINEAR);
     }
@@ -37,7 +37,7 @@ public class MapEquation
      * @param fallOff The method used to calculate the value
      *      of BW colors near this equattion.
      */
-    public MapEquation(BWVector start, BWVector end, FallOffMode fallOff)
+    public MapEquation(HeightVector start, HeightVector end, FallOffMode fallOff)
     {
         START = start;
         END = end;
@@ -48,8 +48,8 @@ public class MapEquation
         MIN_X = START.getX() < END.getX() ? START.getX() : END.getX();
         MAX_X = START.getX() > END.getX() ? START.getX() : END.getX();
         
-        VALUE_SLOPE = (END.getValue() - START.getValue()) / (END.getX() - START.getX());
-        VALUE_Y_INTERCEPT = START.getValue() - (SLOPE * END.getX());
+        VALUE_SLOPE = (END.getHeight() - START.getHeight()) / (END.getX() - START.getX());
+        VALUE_Y_INTERCEPT = START.getHeight() - (SLOPE * END.getX());
         VALUE_MIN_X = START.getX()< END.getX() ? START.getX() : END.getX();
     }
         
@@ -68,7 +68,7 @@ public class MapEquation
      *      the MapEquation's FallOffMode to determine how the
      *      value is calculated.
      */
-    public float valueAt(float x)
+    public float heightAt(float x)
     {
         float linearFallOffValue = (x * VALUE_SLOPE) + VALUE_Y_INTERCEPT;
         float relativeX = x - VALUE_MIN_X;
@@ -88,7 +88,7 @@ public class MapEquation
                 return Float.NaN;
         }
     }
-    
+
     /**
      * @return The lowest x value on the domain of the
      *      point function.
@@ -105,5 +105,14 @@ public class MapEquation
     public int getMaxX()
     {
         return MAX_X;
+    }
+    
+    /**
+     * @return The fallOff mode associated with this
+     *      MapEqaution.
+     */
+    public FallOffMode getFallOff()
+    {
+        return FALL_OFF;
     }
 }

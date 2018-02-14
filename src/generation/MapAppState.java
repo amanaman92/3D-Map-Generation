@@ -47,30 +47,21 @@ public class MapAppState extends BaseAppState
      * @param app The application object that controls the program
      */
     @Override
-    protected void cleanup(Application app)
-    {
-        
-    }
+    protected void cleanup(Application app){}
 
     /**
      * This code runs when the appstate is attached to the
      *      stateManager.
      */
     @Override
-    protected void onEnable()
-    {
-        
-    }
+    protected void onEnable(){}
 
     /**
      * This code runs when the appstate is dettached from the
      *      stateManager.
      */
     @Override
-    protected void onDisable() 
-    {
-        
-    }
+    protected void onDisable(){}
     
     /**
      * This is the AppState Update loop. It runs every frame and
@@ -79,10 +70,7 @@ public class MapAppState extends BaseAppState
      * @param tpf The time taken to run by the last frame.
      */
     @Override
-    public void update(float tpf)
-    {
-        
-    }
+    public void update(float tpf){}
     
     /**
      * This methods sets up ambient and directional lighting for the scene.

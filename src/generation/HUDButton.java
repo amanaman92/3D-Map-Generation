@@ -10,6 +10,7 @@ import java.awt.Rectangle;
 public class HUDButton 
 {
     private final Rectangle BUTTON_BOUNDS;
+    private HUDButtonListener hudButtonListener;
     
     /**
      * Creates a new HUDButton with the given bounds
@@ -18,6 +19,27 @@ public class HUDButton
     public HUDButton(Rectangle buttonBounds)
     {
         BUTTON_BOUNDS = buttonBounds;
+    }
+    
+    /**
+     * Creates a new HUDButton with the given bounds
+     * @param buttonBounds The Rectangle defining button bounds
+     * @param hudButtonListener The Listener object for button clicks
+     */
+    public HUDButton(Rectangle buttonBounds, HUDButtonListener hudButtonListener)
+    {
+        BUTTON_BOUNDS = buttonBounds;
+        setHUDButtonListener(hudButtonListener);
+    }
+    
+    /**
+     * Sets the Listener object for button clicks.
+     *      This object's onAction will be called when the button is clicked.
+     * @param hudButtonListener The Listener object for button clicks
+     */
+    public final void setHUDButtonListener(HUDButtonListener hudButtonListener)
+    {
+        this.hudButtonListener = hudButtonListener;
     }
     
     /**
@@ -33,6 +55,6 @@ public class HUDButton
      */
     public void onClick()
     {
-        
+        hudButtonListener.onAction();
     }
 }

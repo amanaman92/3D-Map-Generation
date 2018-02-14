@@ -17,6 +17,10 @@ public class Statistics
      */
     private Statistics(){}
     
+    /**
+     * @param data The float array data on which to calculate standard deviation.
+     * @return The standard deviation of data.
+     */
     public static float calculateSampleStandardDeviation(float[] data)
     {
         float coefficient = 1f / (data.length - 1f);
@@ -31,11 +35,19 @@ public class Statistics
         return FastMath.sqrt(coefficient * sum);
     }
     
+    /**
+     * @param data The float array data from which to calculate the mean.
+     * @return The mean of the data.
+     */
     public static float calculateMean(float[] data)
     {
         return calculateSum(data) / data.length;
     }
     
+    /**
+     * @param data The float array to sum
+     * @return The sum of the given array elements
+     */
     public static float calculateSum(float[] data)
     {
         float sum = 0 ;
@@ -46,6 +58,11 @@ public class Statistics
         return sum;
     }
     
+    /**
+     * @param xCoordinates the x-values of the data
+     * @param yCoordinates the y-values of the data
+     * @return The Pearson Correlation Coeffitcient from the data
+     */
     public static float calculateCorrelation(float[] xCoordinates, float[] yCoordinates)
     {
         float meanX = calculateMean(xCoordinates);

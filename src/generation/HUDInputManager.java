@@ -23,9 +23,9 @@ public class HUDInputManager implements ActionListener
     private final Dimension SCREEN_SIZE;
     
     /**
-     * Private, since only one HUDInputManager should be created.
+     * Creats a new HUDInputManager
      */
-    private HUDInputManager()
+    public HUDInputManager()
     {
         Main main = Main.getMain();
         INPUT_MANAGER = main.getInputManager();

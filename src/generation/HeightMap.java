@@ -9,48 +9,61 @@ package generation;
 public class HeightMap
 {
     private final float[] HEIGHT_DATA;
-    private final BWVector[][] BW_VECTORS;
+    private final HeightVector[][] HEIGHT_VECTORS;
     private final int MAP_SIZE;
-    private final float BASE_VALUE = .5f;
-    private final float COLOR_MAX = 255;
+    private final float BASE_VALUE = 0;
     
     public HeightMap(int mapSize)
     {
         MAP_SIZE = mapSize;
         HEIGHT_DATA = new float[MAP_SIZE * MAP_SIZE];
-        BW_VECTORS = new BWVector[MAP_SIZE][MAP_SIZE];
+        HEIGHT_VECTORS = new HeightVector[MAP_SIZE][MAP_SIZE];
     }
     
+    /**
+     * Creates the heightmap procedurally by iterating over an array
+     *      of BWVectors to change their color. Multiple passes are
+     *      used to refine results.
+     */
     public void writeHeightMap()
     {
         //Pass 1: Init all BW Vectors
-        for(int x = 0; x < BW_VECTORS.length; x++)
+        for(int x = 0; x < HEIGHT_VECTORS.length; x++)
         {
-            for(int y = 0; y < BW_VECTORS[x].length; y++)
+            for(int y = 0; y < HEIGHT_VECTORS[x].length; y++)
             {
-                BW_VECTORS[x][y] = new BWVector(x, y, BASE_VALUE);
+                HEIGHT_VECTORS[x][y] = new HeightVector(BASE_VALUE);
             }
         }
         
         //Pass 2: Features
         for(int i = 0; i < 20; i++)
         {
-            BWVector start = new BWVector(RandomUtils.randomInt(0, MAP_SIZE), RandomUtils.randomInt(0, MAP_SIZE), RandomUtils.RANDOM.nextFloat());
-            BWVector end = new BWVector(RandomUtils.randomInt(0, MAP_SIZE), RandomUtils.randomInt(0, MAP_SIZE), RandomUtils.RANDOM.nextFloat());
+            int xLoc = RandomUtils.randomInt(0, MAP_SIZE);
+            int yLoc = RandomUtils.randomInt(0, MAP_SIZE);
+            HeightVector start = HEIGHT_VECTORS[xLoc][yLoc];
+            start.setHeight(BASE_VALUE);
+            
+            int x1Loc = RandomUtils.randomInt(0, MAP_SIZE);
+            int y1Loc = RandomUtils.randomInt(0, MAP_SIZE);
+            HeightVector end = HEIGHT_VECTORS[x1Loc][y1Loc];
+            end.setHeight(BASE_VALUE);
+            
             MapEquation mapEq = new MapEquation(start, end);
 
             for(int x = mapEq.getMinX(); x < mapEq.getMaxX(); x++)
             {
+                //Place Feature Center
                 int y = mapEq.pointAt(x);
-                if(y > 0 && y < BW_VECTORS[x].length)
+                if(y > 0 && y < HEIGHT_VECTORS[x].length)
                 {
-                    BW_VECTORS[x][y].setValue(mapEq.valueAt(x));
+                    HEIGHT_VECTORS[x][y].setHeight(mapEq.heightAt(x));
                 }
             }
         }
 
         //Pass 3: Smooth
-        ColorMath.smooth(BW_VECTORS, 2);
+        MapMath.smooth(HEIGHT_VECTORS, 2);
         
         createHeightData();
     }
@@ -65,11 +78,11 @@ public class HeightMap
     private void createHeightData()
     {
         int index = 0;
-        for(BWVector[] vecRow : BW_VECTORS)
+        for(HeightVector[] vecRow : HEIGHT_VECTORS)
         {
-            for(BWVector vec : vecRow)
+            for(HeightVector vec : vecRow)
             {
-                HEIGHT_DATA[index] = vec.getValue() * COLOR_MAX;
+                HEIGHT_DATA[index] = vec.getHeight(); //* COLOR_MAX
                 index++;
             }
         }

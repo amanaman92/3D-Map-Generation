@@ -7,35 +7,12 @@ package generation;
  */
 public abstract class MapVector 
 {
-    private final int X, Y;
-    private float strength;
+    private float strength = 1;
     
     /**
-     * @param x The x-coordinate. This may not be changed once set.
-     * @param y The y-coordinate. This may not be changed once set.
+     * Strength defaults to 1
      */
-    public MapVector(int x, int y)
-    {
-        this.X = x;
-        this.Y = y;
-        strength = 1;
-    }
-    
-    /**
-     * @return The x-coordinate of this vector
-     */
-    public int getX()
-    {
-        return X;
-    }
-    
-    /**
-     * @return The y-coordinate of this vector
-     */
-    public int getY()
-    {
-        return Y;
-    }
+    public MapVector(){}
     
     /**
      * @return The strenght of this Vector over others 
@@ -45,7 +22,7 @@ public abstract class MapVector
         return strength;
     }
     /**
-     * @param strength THe new strength value of this Vector.
+     * @param strength The new strength value of this Vector.
      */
     public void setStrength(float strength)
     {
