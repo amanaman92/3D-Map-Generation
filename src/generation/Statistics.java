@@ -1,13 +1,15 @@
 package generation;
 
 import com.jme3.math.FastMath;
+import java.util.Arrays;
 
 /**
- *
  * References:
  *      http://onlinestatbook.com/2/regression/intro.html
  *      https://www.mathsisfun.com/data/standard-deviation-formulas.html
  *      http://www.mathsisfun.com/data/correlation.html
+ *      https://docs.oracle.com/javase/7/docs/api/java/lang/System.html#arraycopy(java.lang.Object,%20int,%20java.lang.Object,%20int,%20int)
+ *      https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#sort(float[])
  * @author jeffr
  */
 public class Statistics 
@@ -50,12 +52,44 @@ public class Statistics
      */
     public static float calculateSum(float[] data)
     {
-        float sum = 0 ;
+        float sum = 0;
         for(float datum : data)
         {
             sum += datum;
         }
         return sum;
+    }
+    
+    /**
+     * @param data The float array from which to find the percentile
+     * @param percentile The nth percentile, expressed on [0,1]
+     * @return The nth percentile of the data
+     */
+    public static float calculatePercentile(float[] data, float percentile)
+    {
+        float[] dataCopy = new float[data.length];
+        System.arraycopy(data, 0, dataCopy, 0, data.length);
+        Arrays.sort(dataCopy);
+        return dataCopy[(int) (percentile * (dataCopy.length - 1))];
+    }
+    
+    
+   /**
+    * @param data The float array from which to find the maximum value
+    * @return THe maximum value of the float array
+    */
+    public static float calculateMax(float[] data)
+    {
+        return calculatePercentile(data, 1);
+    }
+    
+    /**
+    * @param data The float array from which to find the minimum value
+    * @return THe minimum value of the float array
+    */
+    public static float calculateMin(float[] data)
+    {
+        return calculatePercentile(data, 0);
     }
     
     /**

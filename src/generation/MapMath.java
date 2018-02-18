@@ -41,7 +41,6 @@ public class MapMath
     {
         for(int i = 0; i < iterations; i++)
         {
-            System.out.println(iterations);
             final int SIZE = heightVectors.length;
             for(int x = 0; x < heightVectors.length; x++)
             {
