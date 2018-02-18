@@ -6,4 +6,4 @@ package generation;
  *      as distance increases along the eq.);
  * @author jeffr
  */
-public enum FallOffMode {LINEAR, SQUARE, SQUARE_ROOT, HYPERBOLIC, EXPONENTIAL}
+public enum FallOffMode {LINEAR, SQUARE, SQUARE_ROOT}

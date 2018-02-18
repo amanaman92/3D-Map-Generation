@@ -5,6 +5,8 @@ import java.awt.Color;
 /**
  * This class allows the user to track RGB colors
  *      colors on a procedural image (AlphaMap)
+ * References ucsd:
+ *      https://docs.oracle.com/javase/7/docs/api/java/awt/Color.html
  * @author jeffr
  */
 public class AlphaVector extends MapVector
@@ -12,19 +14,24 @@ public class AlphaVector extends MapVector
     private int colorRGB;
     
     /**
+     * @param x The x-Coordinate of this AlphaVector
+     * @param y The y-Coordinate of this AlphaVector
      * @param color The Color assigned to these coordinates
      */
-    public AlphaVector(Color color)
+    public AlphaVector(short x, short y, Color color)
     {
-        this(color.getRGB());
+        this(x, y, color.getRGB());
     }
     
     /**
+     * @param x The x-Coordinate of this AlphaVector
+     * @param y The y-Coordinate of this AlphaVector
      * @param colorRGB The color assigned to this Vector,
      *      represented as an RGB int
      */
-    public AlphaVector(int colorRGB)
+    public AlphaVector(short x, short y, int colorRGB)
     {
+        super(x, y);
         this.colorRGB = colorRGB;
     }
     

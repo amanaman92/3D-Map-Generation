@@ -8,6 +8,7 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.font.BitmapFont;
 import com.jme3.material.Material;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Node;
@@ -138,11 +139,40 @@ public class Main extends SimpleApplication
         BULLET_APP_STATE.getPhysicsSpace().add(mapBody);
     }
     
+    /**
+     * Set up the camera view range and location
+     */
     private void initCamera()
     {
         flyCam.setMoveSpeed(100);
-        cam.setLocation(new Vector3f(0, 128, 0));
+        Vector3f camLoc = coordinateOf(0, 0);
+        if(camLoc != null)
+        {
+            cam.setLocation(camLoc);
+        }
+        else
+        {
+            cam.setLocation(new Vector3f(0, 128, 0));
+        }
         cam.setFrustumFar(MAP_SIZE * MAP_SIZE);
+    }
+    
+    /**
+     * Finds the Vectror3f coordinate of a point on the map
+     *      given in x, z
+     * @param x The x-ccordinate of the point
+     * @param z The y-ccordinate of the point
+     * @return the Vector3f representing this point on
+     *      the map in 3-space
+     */
+    public Vector3f coordinateOf(float x, float z)
+    {
+        float y = terrain.getHeight(new Vector2f(x, z));
+        if(Float.isNaN(y))
+        {
+            return null;
+        }
+        return new Vector3f(x, y, z);
     }
 
     /**
