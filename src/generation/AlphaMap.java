@@ -3,6 +3,8 @@ package generation;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture2D;
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -48,22 +50,19 @@ public class AlphaMap
     public void writeAlphaMap()
     {
         float q3 = Statistics.calculatePercentile(HEIGHT_MAP.getHeightData(), .75f);
-        System.out.println("---------------------------" + q3);
+        System.out.println("---------------------------Q3: " + q3);
         
         //Pass 1: Init all Alpha Vectors
-        int a = 0, b = 0;
         for(short x = 0; x < ALPHA_VECTORS.length; x++)
         {
             for(short y = 0; y < ALPHA_VECTORS[x].length; y++)
             {
                 if(HEIGHT_MAP.getHeightVectors()[x][y].getHeight() > q3)
                 {
-                    a++;
                     ALPHA_VECTORS[x][y] = new AlphaVector(x, y, GRASS);
                 }
                 else
                 {
-                    b++;
                     ALPHA_VECTORS[x][y] = new AlphaVector(x, y, DIRT);
                 }
             }
@@ -79,7 +78,10 @@ public class AlphaMap
         }
 
         createTexture2D();
-        writeToDisk();
+        if(Main.getMain().getDebug())
+        {
+            writeToDisk();
+        }
     }
     
     /**

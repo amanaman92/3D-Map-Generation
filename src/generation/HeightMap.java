@@ -1,6 +1,5 @@
 package generation;
 
-import com.jme3.math.FastMath;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -33,7 +32,7 @@ public class HeightMap
         MAP_SIZE = mapSize;
         HEIGHT_DATA = new float[MAP_SIZE * MAP_SIZE];
         HEIGHT_VECTORS = new HeightVector[MAP_SIZE][MAP_SIZE];
-        TERRAIN_TYPE = BaseTerrain.MOUNTAIN;
+        TERRAIN_TYPE = BaseTerrain.HILLS;
     }
     
     /**
@@ -57,13 +56,12 @@ public class HeightMap
      */
     public void writeHeightMap()
     {
-        //Pass 1: Init all Height Vectors
+        //Pass 1: Init all Height Vectors with a TerrainType
         for(short x = 0; x < HEIGHT_VECTORS.length; x++)
         {
             for(short z = 0; z < HEIGHT_VECTORS[x].length; z++)
             {
                 HEIGHT_VECTORS[x][z] = new HeightVector(x, z, TERRAIN_TYPE.getHeight(x, z, MAP_SIZE) + BASE_VALUE);
-                //HEIGHT_VECTORS[x][y] = new HeightVector(x, y, 20 * FastMath.sin(x / 50) + 20 * FastMath.cos(y / 50));
             }
         }
         
@@ -97,7 +95,7 @@ public class HeightMap
                 }
             }
         }
-        
+
         //Pass 3: Refinement of features
         for(short x = 0; x < HEIGHT_VECTORS.length; x++)
         {
@@ -109,12 +107,19 @@ public class HeightMap
                 }
             }
         }
+        
+                System.out.println(HeightMapEquation.a);
+        System.out.println(HeightMapEquation.b);
+        System.out.println(HeightMapEquation.c);
 
         //Pass 4: Smooth
         MapMath.smooth(HEIGHT_VECTORS, 2);
         
         createHeightData();
-        writeToDisk();
+        if(Main.getMain().getDebug())
+        {
+            writeToDisk();
+        }
     }
     
     /**

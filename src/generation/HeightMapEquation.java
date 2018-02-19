@@ -16,8 +16,10 @@ public class HeightMapEquation extends HeightLine
             TOLERANCE = .001f,
             FALL_OFF_SCALAR = 100;
     private final int VALUE_MIN_X,
-            RADIUS = 20;
+            RADIUS = 200;
     
+    public static int a = 0, b = 0, c = 0;
+                
     /**
      * FallOffMode is defualted to LINEAR.
      * @param vec1 The BWVector at one end of the line
@@ -25,7 +27,7 @@ public class HeightMapEquation extends HeightLine
      */
     public HeightMapEquation(HeightVector vec1, HeightVector vec2)
     {
-        this(vec1, vec2, FallOffMode.SQUARE_ROOT);
+        this(vec1, vec2, FallOffMode.LINEAR);
     }
     
     /**
@@ -74,27 +76,22 @@ public class HeightMapEquation extends HeightLine
         float distance = calcualteDistance(point);
         if(distance < TOLERANCE)
         {
+            a++;
             return heightAt(point.getX());
         }
         
         if(distance > RADIUS)
         {
-            //return point.getHeight();
+            b++;
+            return point.getHeight();
         }
         
+        c++;
         float baseHeight = point.getHeight();
         float maxHeight = point.getHeight() + heightAt(calculateNearestXOnLine(point));
-        float height = 0;
-        switch(FALL_OFF)
+        float height = baseHeight - FALL_OFF.heightChangeAt(distance, FALL_OFF_SCALAR); 
+        /*switch(FALL_OFF)
         {
-            /*case SQUARE:
-                return FALL_OFF_SCALAR / (distance * distance);
-            case SQUARE_ROOT:
-                return FALL_OFF_SCALAR / (FastMath.sqrt(distance));
-            case LINEAR:
-            default:
-                return FALL_OFF_SCALAR / distance; //was *
-            */
             case SQUARE:
                 height = baseHeight - ((distance * distance) / FALL_OFF_SCALAR);
                 break;
@@ -105,8 +102,8 @@ public class HeightMapEquation extends HeightLine
             default:
                 height = baseHeight - (distance / FALL_OFF_SCALAR);
                 break;
-        }
-        return height < baseHeight ? baseHeight : (height > maxHeight ? maxHeight : height);
+        }*/
+        return height;//height < baseHeight ? baseHeight : (height > maxHeight ? maxHeight : height);
     }
     
     /**
