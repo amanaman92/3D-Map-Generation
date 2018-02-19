@@ -1,10 +1,8 @@
-A few notes so far:
-    The UI still is not in the right place in execution. In reality, the UI AppState should run before the MapAppState.
-    When it is done collecting data, it should be removed from the stateManager, and only then should the MapAppState
-    be attached.
+Some more notes:
+    GUI now precedes game in execution order. This is not yet noticeable (The only thing the GUI now does is call the game to begin running). However, it is a template for developing the GUI in its proper place of program execution.
 
-The map rendering is freaking out on my computer. Please tell me if your GPU has trouble handling the generated map.
-Procedural Generation (PG) is still limited. Texutring is just a placeholder.
+    FPS is capped arbitrarily at 100 (my computer was going up to 3k FPS and crashing). I'm not sure if anyone else had this bug, but now it is fixed.
 
-I made a RandomUtils class. If you need to do anything with Randomness, go through this class. Do not create any more
-    Random objects, nor call Math.random!! We want to have one seed for all randomness, so it can be reproduced.
+    Procedural Generation (PG) has had some HUGE improvements but is still not perfect. I won't go into too many detail--suffice to say it is nice but too bumpy for my taste.
+
+    Happy coding!!
