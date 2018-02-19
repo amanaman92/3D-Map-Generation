@@ -1,7 +1,5 @@
 package generation;
 
-import com.jme3.math.FastMath;
-
 /**
  * A MapEquation represents a set of points that can be drawn
  *      on the Height / Alpha Map. For any input x, it returns the 
@@ -14,10 +12,10 @@ public class HeightMapEquation extends HeightLine
     private final float VALUE_SLOPE,
             VALUE_Y_INTERCEPT,
             TOLERANCE = .001f,
-            FALL_OFF_SCALAR = 100;
+            FALL_OFF_SCALAR = .05f;
     private final int VALUE_MIN_X,
-            RADIUS = 20;
-    
+            RADIUS = 200;
+                
     /**
      * FallOffMode is defualted to LINEAR.
      * @param vec1 The BWVector at one end of the line
@@ -25,7 +23,7 @@ public class HeightMapEquation extends HeightLine
      */
     public HeightMapEquation(HeightVector vec1, HeightVector vec2)
     {
-        this(vec1, vec2, FallOffMode.SQUARE_ROOT);
+        this(vec1, vec2, FallOffMode.LINEAR);
     }
     
     /**
@@ -42,11 +40,6 @@ public class HeightMapEquation extends HeightLine
         VALUE_SLOPE = (END.getHeight() - START.getHeight()) / (END.getX() - START.getX());
         VALUE_Y_INTERCEPT = START.getHeight() - (SLOPE * END.getX());
         VALUE_MIN_X = START.getHeight() < END.getHeight() ? START.getX() : END.getX();
-        
-        //Local Region
-        float radius = RADIUS / FALL_OFF_SCALAR;
-        int width = (int) ((MAX_X - MIN_X) + radius);
-        int height = (int) ((MAX_Y - MIN_Y) + radius);
     }
     
     /**
@@ -79,34 +72,12 @@ public class HeightMapEquation extends HeightLine
         
         if(distance > RADIUS)
         {
-            //return point.getHeight();
+            return point.getHeight();
         }
         
         float baseHeight = point.getHeight();
-        float maxHeight = point.getHeight() + heightAt(calculateNearestXOnLine(point));
-        float height = 0;
-        switch(FALL_OFF)
-        {
-            /*case SQUARE:
-                return FALL_OFF_SCALAR / (distance * distance);
-            case SQUARE_ROOT:
-                return FALL_OFF_SCALAR / (FastMath.sqrt(distance));
-            case LINEAR:
-            default:
-                return FALL_OFF_SCALAR / distance; //was *
-            */
-            case SQUARE:
-                height = baseHeight - ((distance * distance) / FALL_OFF_SCALAR);
-                break;
-            case SQUARE_ROOT:
-                height = baseHeight - (FastMath.sqrt(distance) / FALL_OFF_SCALAR);
-                break;
-            case LINEAR:
-            default:
-                height = baseHeight - (distance / FALL_OFF_SCALAR);
-                break;
-        }
-        return height < baseHeight ? baseHeight : (height > maxHeight ? maxHeight : height);
+        float height = baseHeight - FALL_OFF.heightChangeAt(distance, FALL_OFF_SCALAR); 
+        return height;
     }
     
     /**

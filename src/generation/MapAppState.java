@@ -79,7 +79,7 @@ public class MapAppState extends BaseAppState
      */
     private void initLight() 
     {
-        AMBIENT_LIGHT.setColor(ColorRGBA.White.mult(1.3f));
+        AMBIENT_LIGHT.setColor(ColorRGBA.White);
         
         DIRECTIONAL_LIGHT.setDirection(new Vector3f(-1, -1, 0));
         DIRECTIONAL_LIGHT.setColor(ColorRGBA.White);

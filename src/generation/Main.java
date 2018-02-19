@@ -12,6 +12,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Node;
+import com.jme3.system.AppSettings;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.texture.Texture;
@@ -29,13 +30,15 @@ import java.awt.Toolkit;
 public class Main extends SimpleApplication 
 {
     private static final Main MAIN = new Main();
+    private static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
+    private final static int MAX_FRAMERATE = 100;
+    
     private final BaseAppState MAP_APP_STATE = new MapAppState(),
             HUD_APP_STATE = new HUDAppState();
     private final BulletAppState BULLET_APP_STATE = new BulletAppState();
     private TerrainQuad terrain;
-    private static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
-    
     private final int MAP_SIZE = 1024;
+    private final boolean DEBUG = true;
     
     /**
      * This is private so no other Main objects can be made
@@ -53,6 +56,15 @@ public class Main extends SimpleApplication
      */
     public static void main(String[] args)
     {
+        //Global Application Settings
+        AppSettings settings = new AppSettings(true);
+        settings.setFrameRate(MAX_FRAMERATE);
+        settings.setTitle("Procedural Generation");
+        settings.setFullscreen(true);
+        settings.setResolution(SCREEN_SIZE.width, SCREEN_SIZE.height);
+        MAIN.setSettings(settings);
+        
+        //Begin game execution
         MAIN.start();
     }
 
@@ -63,12 +75,25 @@ public class Main extends SimpleApplication
      */
     @Override
     public void simpleInitApp()
+    {   
+        //Init Global Variables / Data
+        initJME3GlobalGUI();
+        
+        //Init GUI App State
+        stateManager.attach(HUD_APP_STATE);
+    }
+    
+    /**
+     * Called by GUI AppState when the game is ready to start.
+     *      Pass game parameters to this method as needed.
+     */
+    public void beginGame()
     {
+        //Init App States
         stateManager.attach(BULLET_APP_STATE);
         stateManager.attach(MAP_APP_STATE);
-        stateManager.attach(HUD_APP_STATE);
         
-        initGUI();
+        //Init Game Variables / Data
         generateProceduralMap();
         initCamera();
     }
@@ -76,10 +101,13 @@ public class Main extends SimpleApplication
     /**
      * Set JME3 global GUI variables
      */
-    private void initGUI()
+    private void initJME3GlobalGUI()
     {
-        setDisplayStatView(false);
-        setDisplayFps(false);
+        if(!DEBUG)
+        {
+            setDisplayStatView(false);
+            setDisplayFps(false);
+        }
         guiNode.setQueueBucket(Bucket.Gui);
     }
     
@@ -218,5 +246,13 @@ public class Main extends SimpleApplication
     public Dimension getScreenSize()
     {
         return SCREEN_SIZE;
+    }
+    
+    /**
+     * @return If the application is running in debug mode
+     */
+    public boolean getDebug()
+    {
+        return DEBUG;
     }
 }
