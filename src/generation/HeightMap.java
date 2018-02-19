@@ -107,10 +107,6 @@ public class HeightMap
                 }
             }
         }
-        
-                System.out.println(HeightMapEquation.a);
-        System.out.println(HeightMapEquation.b);
-        System.out.println(HeightMapEquation.c);
 
         //Pass 4: Smooth
         MapMath.smooth(HEIGHT_VECTORS, 2);

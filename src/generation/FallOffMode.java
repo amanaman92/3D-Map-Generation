@@ -27,8 +27,7 @@ public enum FallOffMode
         @Override
         public float heightChangeAt(float distance, float fallOffScalar)
         {
-            return distance;
-            //return fallOffScalar / distance;
+            return distance * fallOffScalar;
         }
     }, 
     
@@ -48,8 +47,7 @@ public enum FallOffMode
         @Override
         public float heightChangeAt(float distance, float fallOffScalar)
         {
-            return 0;
-            //return fallOffScalar / (distance * distance);
+            return FastMath.sqr(distance) * fallOffScalar;
         }
     }, 
     
@@ -69,8 +67,7 @@ public enum FallOffMode
         @Override
         public float heightChangeAt(float distance, float fallOffScalar)
         {
-            return 0;
-            //return fallOffScalar / FastMath.sqrt(distance);
+            return FastMath.sqrt(distance) * fallOffScalar;
         }
     };
     

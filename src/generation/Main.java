@@ -60,6 +60,8 @@ public class Main extends SimpleApplication
         AppSettings settings = new AppSettings(true);
         settings.setFrameRate(MAX_FRAMERATE);
         settings.setTitle("Procedural Generation");
+        settings.setFullscreen(true);
+        settings.setResolution(SCREEN_SIZE.width, SCREEN_SIZE.height);
         MAIN.setSettings(settings);
         
         //Begin game execution
@@ -74,13 +76,24 @@ public class Main extends SimpleApplication
     @Override
     public void simpleInitApp()
     {   
+        //Init Global Variables / Data
+        initJME3GlobalGUI();
+        
+        //Init GUI App State
+        stateManager.attach(HUD_APP_STATE);
+    }
+    
+    /**
+     * Called by GUI AppState when the game is ready to start.
+     *      Pass game parameters to this method as needed.
+     */
+    public void beginGame()
+    {
         //Init App States
         stateManager.attach(BULLET_APP_STATE);
         stateManager.attach(MAP_APP_STATE);
-        stateManager.attach(HUD_APP_STATE);
         
-        //Init Global Variables / Data
-        initGUI();
+        //Init Game Variables / Data
         generateProceduralMap();
         initCamera();
     }
@@ -88,7 +101,7 @@ public class Main extends SimpleApplication
     /**
      * Set JME3 global GUI variables
      */
-    private void initGUI()
+    private void initJME3GlobalGUI()
     {
         if(!DEBUG)
         {

@@ -19,6 +19,8 @@ public class HUDAppState extends BaseAppState
     private BitmapFont guiFont;
     private Dimension screenSize;
 
+    private boolean launchGame = true; //change to false when GUI added
+    
     /**
      * This function does basic initialiation of the AppState.
      *      Not called directly from user code.
@@ -88,6 +90,10 @@ public class HUDAppState extends BaseAppState
     @Override
     public void update(float tpf)
     {
-        
+        if(launchGame)
+        {
+            launchGame = false;
+            main.beginGame();
+        }
     }
 }

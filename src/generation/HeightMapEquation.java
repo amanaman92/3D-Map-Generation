@@ -1,7 +1,5 @@
 package generation;
 
-import com.jme3.math.FastMath;
-
 /**
  * A MapEquation represents a set of points that can be drawn
  *      on the Height / Alpha Map. For any input x, it returns the 
@@ -14,11 +12,9 @@ public class HeightMapEquation extends HeightLine
     private final float VALUE_SLOPE,
             VALUE_Y_INTERCEPT,
             TOLERANCE = .001f,
-            FALL_OFF_SCALAR = 100;
+            FALL_OFF_SCALAR = .05f;
     private final int VALUE_MIN_X,
             RADIUS = 200;
-    
-    public static int a = 0, b = 0, c = 0;
                 
     /**
      * FallOffMode is defualted to LINEAR.
@@ -44,11 +40,6 @@ public class HeightMapEquation extends HeightLine
         VALUE_SLOPE = (END.getHeight() - START.getHeight()) / (END.getX() - START.getX());
         VALUE_Y_INTERCEPT = START.getHeight() - (SLOPE * END.getX());
         VALUE_MIN_X = START.getHeight() < END.getHeight() ? START.getX() : END.getX();
-        
-        //Local Region
-        float radius = RADIUS / FALL_OFF_SCALAR;
-        int width = (int) ((MAX_X - MIN_X) + radius);
-        int height = (int) ((MAX_Y - MIN_Y) + radius);
     }
     
     /**
@@ -76,34 +67,17 @@ public class HeightMapEquation extends HeightLine
         float distance = calcualteDistance(point);
         if(distance < TOLERANCE)
         {
-            a++;
             return heightAt(point.getX());
         }
         
         if(distance > RADIUS)
         {
-            b++;
             return point.getHeight();
         }
         
-        c++;
         float baseHeight = point.getHeight();
-        float maxHeight = point.getHeight() + heightAt(calculateNearestXOnLine(point));
         float height = baseHeight - FALL_OFF.heightChangeAt(distance, FALL_OFF_SCALAR); 
-        /*switch(FALL_OFF)
-        {
-            case SQUARE:
-                height = baseHeight - ((distance * distance) / FALL_OFF_SCALAR);
-                break;
-            case SQUARE_ROOT:
-                height = baseHeight - (FastMath.sqrt(distance) / FALL_OFF_SCALAR);
-                break;
-            case LINEAR:
-            default:
-                height = baseHeight - (distance / FALL_OFF_SCALAR);
-                break;
-        }*/
-        return height;//height < baseHeight ? baseHeight : (height > maxHeight ? maxHeight : height);
+        return height;
     }
     
     /**
