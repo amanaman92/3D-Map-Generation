@@ -4,5 +4,3 @@ Some more notes:
     FPS is capped arbitrarily at 100 (my computer was going up to 3k FPS and crashing). I'm not sure if anyone else had this bug, but now it is fixed.
 
     Procedural Generation (PG) has had some HUGE improvements but is still not perfect. I won't go into too many detail--suffice to say it is nice but too bumpy for my taste.
-
-    Happy coding!!
