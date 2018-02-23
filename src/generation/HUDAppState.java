@@ -1,5 +1,5 @@
 package generation;
-
+import java.awt.*;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.font.BitmapFont;
@@ -7,13 +7,13 @@ import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
 import java.awt.Dimension;
-
+import com.jme3.ui.Picture;
+import com.jme3.asset.AssetManager;
 /**
  * This class control I / O and display for the HUD (GUI).
  * @author jeffr
  */
-public class HUDAppState extends BaseAppState
-{
+public class HUDAppState extends BaseAppState{
     private Main main;
     private Node guiNode;
     private BitmapFont guiFont;
@@ -38,11 +38,23 @@ public class HUDAppState extends BaseAppState
     
     /**
      * Creates the main menu, where most or all UI elements should be placed
+     * 
+     * Will need to be able to create much of
      */
     private void createMainMenu()
     {
         BitmapText hpText = new BitmapText(guiFont, false);
         hpText.setText("YAY! TEXT DISPLAY WORKS");
+        
+        //Line 50 - Line 56 is mine.
+        AssetManager a = main.getAssetManager();
+        Picture guiPict = new Picture("guiBackground");
+        guiPict.setImage(a, "GUIComponent/guiBG.png", true);
+        guiPict.setWidth(screenSize.width/2);
+        guiPict.setHeight(screenSize.height);
+        guiPict.setPosition(screenSize.width/4, screenSize.height/4);
+        guiNode.attachChild(guiPict);
+
         hpText.setSize(guiFont.getCharSet().getRenderedSize());
         hpText.setColor(ColorRGBA.Red);
         hpText.setSize(50);
