@@ -9,6 +9,13 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 
+import com.jme3.util.SkyFactory;
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.effect.ParticleMesh;
+import com.jme3.effect.shapes.EmitterSphereShape;
+import com.jme3.material.Material;
+
+
 /**
  * This AppState should be attached to view and interact with the
  *      map. Put all game logic relating to the map after its
@@ -22,6 +29,16 @@ public class MapAppState extends BaseAppState
     private ViewPort viewPort;
     private final AmbientLight AMBIENT_LIGHT = new AmbientLight();
     private final DirectionalLight DIRECTIONAL_LIGHT = new DirectionalLight();
+    
+    
+    private ParticleEmitter rain;
+    private float rainGravity = 500f;
+    private float rainEmitterRadius = 1000f;
+    private float rainEmitterHeight = 50f;
+    private int rainParticlesPerSec = 10000;
+    
+    
+    
     
     /**
      * This function does basic initialiation of the AppState.
@@ -39,6 +56,7 @@ public class MapAppState extends BaseAppState
         //Init Methods
         initSky();
         initLight();
+        initRain();
     }
 
     /**
@@ -70,7 +88,9 @@ public class MapAppState extends BaseAppState
      * @param tpf The time taken to run by the last frame.
      */
     @Override
-    public void update(float tpf){}
+    public void update(float tpf){
+        rain.setLocalTranslation(main.getCamera().getLocation());
+    }
     
     /**
      * This methods sets up ambient and directional lighting for the scene.
@@ -89,11 +109,47 @@ public class MapAppState extends BaseAppState
     }
     
     /**
-     * Creates a monochromatic sky-blue sky and places it infiitely far
-     *      away in the background.
+     * Projects a spherical texture onto the inside of a 
+     * very large sphere centered on the map. Gives the illusion of distant
+     * scenery like sun, cloudes, water. 
      */
     private void initSky()
     {
-        viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
+        // viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
+        main.getRootNode().attachChild(SkyFactory.createSky(main.getAssetManager(), 
+                "Textures/Skysphere.jpg", SkyFactory.EnvMapType.SphereMap));
     }
+    
+    /*
+     * This method creates rain particles in a sphere centered on the camera.
+     *
+     * inspired by https://jmonkeyengine.github.io/wiki/jme3/beginner/hello_effects.html
+    */
+    private void initRain()  
+    {
+    rain = new ParticleEmitter(
+            "rain", ParticleMesh.Type.Triangle, rainParticlesPerSec);
+    rain.setShape(new EmitterSphereShape(Vector3f.ZERO, rainEmitterRadius));
+    Material material = new Material(main.getAssetManager(),
+            "Common/MatDefs/Misc/Particle.j3md"); // Emitter emits Particle objects
+    material.setTexture("Texture", main.getAssetManager().loadTexture(
+            "Effects/raindrop.png")); // The image is Texture type, white line
+    rain.setMaterial(material);  
+    rain.setLocalTranslation(main.getCamera().getLocation());
+    rain.getParticleInfluencer().setInitialVelocity(new Vector3f(0.0f, -1.1f, 0.0f));
+    rain.setGravity(0, rainGravity, 0);
+    rain.setLowLife(2); // Each particle lasts atleast 2 
+    rain.setHighLife(5); // Each particles lasts at most 5
+    rain.setImagesX(1); // Set x proportion of texture
+    rain.setImagesY(10); // Set y proportion of texture
+    rain.setStartSize(1f); // Particle created with size 1
+    rain.setEndSize(0f); // Particle shrinks to 0
+    rain.setStartColor(new ColorRGBA(1.0f, 1.0f, 1.0f, 1f)); // Start white
+    rain.setEndColor(new ColorRGBA(1f, 1f, 1.0f, 1f)); // End white
+    rain.setParticlesPerSec(rainParticlesPerSec); // How many particles per sec  
+    main.getRootNode().attachChild(rain);
+    }
+
+    
+   
 }
