@@ -95,7 +95,13 @@ public class Main extends SimpleApplication
         
         //Init Game Variables / Data
         generateProceduralMap();
+        placeTrees();
         initCamera();
+    }
+    
+    public void placeTrees()
+    {
+        
     }
     
     /**
