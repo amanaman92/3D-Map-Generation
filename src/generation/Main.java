@@ -97,6 +97,7 @@ public class Main extends SimpleApplication
         
         //Init Game Variables / Data
         generateProceduralMap();
+        placeTrees(100);
         initCamera();
     }
     
@@ -107,18 +108,24 @@ public class Main extends SimpleApplication
         //Random
     Random gen = new Random();
     
-    public void placeTrees()  
+    
+    /**
+     * Spawns a num of trees in random location on map
+     * @param num number of trees that spawn
+     */
+    public void placeTrees(int num)  
     {
-        
-        Vector3f treeLoc;
-        
-        int x = gen.nextInt(MAP_SIZE) - (int) (.5f * MAP_SIZE);
-        int z = gen.nextInt(MAP_SIZE) - (int) (.5f * MAP_SIZE);
-        treeLoc = coordinateOf(x, z);
-        
-        
-        TREES.add(new Tree(assetManager, rootNode, BULLET_APP_STATE, treeLoc, 1, false));
-        
+        for(int i = 0; i < num; i++)
+        {
+            Vector3f treeLoc;
+
+            int x = gen.nextInt(MAP_SIZE) - (int) (.5f * MAP_SIZE);
+            int z = gen.nextInt(MAP_SIZE) - (int) (.5f * MAP_SIZE);
+            treeLoc = coordinateOf(x, z);
+
+
+            TREES.add(new Tree(assetManager, rootNode, BULLET_APP_STATE, treeLoc, 1, false));
+        }
     }
     
     
