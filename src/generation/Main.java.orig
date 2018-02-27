@@ -34,12 +34,17 @@ public class Main extends SimpleApplication
     private static final Main MAIN = new Main();
     private static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
     private final static int MAX_FRAMERATE = 100;
+<<<<<<< HEAD
+    
+    private final BaseAppState MAP_APP_STATE = new MapAppState(),
+            HUD_APP_STATE = new HUDAppState();
+=======
     //private final static InputManager INPUT_MANAGER = new InputManager(null, null, null, null);
     //Make input manager here and make function getInputManager; OVERRIDE IT.
 
     private  BaseAppState mapAppState,             
             hudAppState;
-
+>>>>>>> master
     private final BulletAppState BULLET_APP_STATE = new BulletAppState();
     private TerrainQuad terrain;
     private final int MAP_SIZE = 1024;
@@ -283,7 +288,10 @@ public class Main extends SimpleApplication
      */
     public Dimension getScreenSize()
     {
+<<<<<<< HEAD
+=======
         //System.out.println("Hello! screenSize");
+>>>>>>> master
         return SCREEN_SIZE;
     }
     
@@ -294,8 +302,9 @@ public class Main extends SimpleApplication
     {
         return DEBUG;
     }
+<<<<<<< HEAD
 }
-
+=======
     
     /**
      * @return the SimpleApplication's default inputManager object
@@ -309,3 +318,4 @@ public class Main extends SimpleApplication
     
 }
     //Lines 269 - 271 is what I wrote
+>>>>>>> master

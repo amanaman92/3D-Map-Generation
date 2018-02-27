@@ -87,3 +87,4 @@ public class Tree
         return new Vector2f(treeBody.getPhysicsLocation().x, treeBody.getPhysicsLocation().z);
     }
 }
+
