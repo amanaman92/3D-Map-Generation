@@ -35,8 +35,9 @@ public class Main extends SimpleApplication
     private final static int MAX_FRAMERATE = 100;
     //private final static InputManager INPUT_MANAGER = new InputManager(null, null, null, null);
     //Make input manager here and make function getInputManager; OVERRIDE IT.
-    private final BaseAppState MAP_APP_STATE = new MapAppState(),
-            HUD_APP_STATE = new HUDAppState();
+
+    private  BaseAppState mapAppState,             
+            hudAppState;
     private final BulletAppState BULLET_APP_STATE = new BulletAppState();
     private TerrainQuad terrain;
     private final int MAP_SIZE = 1024;
@@ -79,10 +80,14 @@ public class Main extends SimpleApplication
     @Override
     public void simpleInitApp()
     {   
+         //Note: inputManager had not been initalized before putting the two variables below. As a result, main was null even when trying to
+        //initialize it.
+        hudAppState = new HUDAppState();
+        mapAppState = new MapAppState();
         //Init Global Variables / Data
         initJME3GlobalGUI();
         //Init GUI App State
-        stateManager.attach(HUD_APP_STATE);
+        stateManager.attach(hudAppState);
     }
     
     /**
@@ -93,7 +98,7 @@ public class Main extends SimpleApplication
     {
         //Init App States
         stateManager.attach(BULLET_APP_STATE);
-        stateManager.attach(MAP_APP_STATE);
+        stateManager.attach(mapAppState);
         
         //Init Game Variables / Data
         generateProceduralMap();
@@ -254,7 +259,7 @@ public class Main extends SimpleApplication
      */
     public Dimension getScreenSize()
     {
-        System.out.println("Hello! screenSize");
+        //System.out.println("Hello! screenSize");
         return SCREEN_SIZE;
     }
     
@@ -272,7 +277,7 @@ public class Main extends SimpleApplication
     @Override
     public InputManager getInputManager()
     {
-        System.out.println("Hello!");
+        //System.out.println("Hello!");
         return this.inputManager;
     }
     

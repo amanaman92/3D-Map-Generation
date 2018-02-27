@@ -56,7 +56,11 @@ public class HUDAppState extends BaseAppState{
     public void createText(String s){
         BitmapText hpText = new BitmapText(guiFont, false);
         hpText.setText(s);
-        
+        hpText.setSize(guiFont.getCharSet().getRenderedSize());
+        hpText.setColor(ColorRGBA.Red);
+        hpText.setSize(600);
+        hpText.setLocalTranslation(screenSize.width / 2, screenSize.height / 2, 0);
+        guiNode.attachChild(hpText);
     }
     public String getWeather(int index){
         return weathers[index];
@@ -73,7 +77,7 @@ public class HUDAppState extends BaseAppState{
         
         //TODO: set each coords to be less hardcoded and more for the screen size.
         
- 
+
         HUDButton incTree = new HUDButton(new Rectangle(20, 20, 20, 20));
         HUDButton decTree = new HUDButton(new Rectangle(30, 30, 20, 20));
         HUDButton weatherUp = new HUDButton(new Rectangle(40, 40, 20, 20));
@@ -89,7 +93,7 @@ public class HUDAppState extends BaseAppState{
                     public void onAction() 
                     {
                         incTree();
-                        createText(treeNum);
+                        createText("" + treeNum);
                     }
                 });
         
@@ -99,10 +103,10 @@ public class HUDAppState extends BaseAppState{
                     public void onAction() 
                     {
                         decTree();
-                        createText(treeNum);
+                        createText("" + treeNum);
                     }
                 });
-        /*
+        
         weatherUp.setHUDButtonListener(new HUDButtonListener()
                 {
                     @Override
@@ -113,7 +117,6 @@ public class HUDAppState extends BaseAppState{
                         //Note to self: Why can't you just directly increment weatherIndex++ and instead use a getter method for it?
                         //That is, why would you have to be in a position of saying to make it final?
                         
-                        createText(weathers[weatherIndex]);
                     }
                 });
         
@@ -126,25 +129,13 @@ public class HUDAppState extends BaseAppState{
                         createText(weathers[weatherIndex]);
                     }
                 });
-        */
-
         
         HUD_INPUT_MANAGER.addButton(incTree);
         HUD_INPUT_MANAGER.addButton(decTree);
         HUD_INPUT_MANAGER.addButton(weatherUp);
         HUD_INPUT_MANAGER.addButton(weatherDown);
-        HUD_INPUT_MANAGER.addButton(createTerrainButton);
+        //HUD_INPUT_MANAGER.addButton(createTerrainButton);
         
-                
-        BitmapText hpText = new BitmapText(guiFont, false);
-        hpText.setText("YAY! TEXT DISPLAY WORKS");
-        
-        //TODO: set texts that add in the variables for trees and so forth.
-        /*
-        BitmapText hpText2 = new BitmapText(guiFont, false);
-        hpText2.setText("YAY! TEXT DISPLAY WORKS");
-        */
-        //Line 50 - Line 56 is mine.
         AssetManager a = main.getAssetManager();
         Picture guiPict = new Picture("guiBackground");
         guiPict.setImage(a, "GUIComponent/guiBG.png", true);
@@ -169,29 +160,32 @@ public class HUDAppState extends BaseAppState{
          * If nothing changes from 0, keep it at 0. 
          * 
          **/ 
-
+        /*
+        BitmapText hpText = new BitmapText(guiFont, false);
+        hpText.setText("YAY! TEXT DISPLAY WORKS");
         hpText.setSize(guiFont.getCharSet().getRenderedSize());
         hpText.setColor(ColorRGBA.Red);
         hpText.setSize(50);
         hpText.setLocalTranslation(screenSize.width / 2, screenSize.height / 2, 0);
         guiNode.attachChild(hpText);
+        */
     }
-   
-    public void incTree(){
+   public void incTree(){
         treeNum++;
     }
     public void decTree(){
         treeNum--;
     }
     public void incWeatherChoice(){
-        treeNum++;
+        weatherIndex++;
     }
     public void decWeatherChoice(){
-        treeNum--;
+        weatherIndex--;
     }
     public void launchGame(){
         launchGame = true;   
     }
+    
     /**
      * This cleans up the AppState for removal. Not called
      *      directly from user code.
