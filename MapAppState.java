@@ -2,6 +2,7 @@ package generation;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
+import com.jme3.audio.AudioNode;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
@@ -37,6 +38,8 @@ public class MapAppState extends BaseAppState
     private float rainEmitterHeight = 50f;
     private int rainParticlesPerSec = 10000;
     
+    private AudioNode rainAudio;
+    
     
     
     
@@ -57,6 +60,7 @@ public class MapAppState extends BaseAppState
         initSky();
         initLight();
         initRain();
+        initRainAudio();
     }
 
     /**
@@ -85,12 +89,11 @@ public class MapAppState extends BaseAppState
      * This is the AppState Update loop. It runs every frame and
      *      should be responsible for the majority of in-game
      *      logic.
-     * Updates the location of the rain particle emitter to to cam location.
      * @param tpf The time taken to run by the last frame.
      */
     @Override
     public void update(float tpf){
-        rain.setLocalTranslation(main.getCamera().getLocation().add(new Vector3f(0, 100, 0));
+        rain.setLocalTranslation(main.getCamera().getLocation());
     }
     
     /**
@@ -136,7 +139,7 @@ public class MapAppState extends BaseAppState
     material.setTexture("Texture", main.getAssetManager().loadTexture(
             "Effects/raindrop.png")); // The image is Texture type, white line
     rain.setMaterial(material);  
-    rain.setLocalTranslation(main.getCamera().getLocation().add(new Vector3f(0, 100, 0);
+    rain.setLocalTranslation(main.getCamera().getLocation());
     rain.getParticleInfluencer().setInitialVelocity(new Vector3f(0.0f, -1.1f, 0.0f));
     rain.setGravity(0, rainGravity, 0);
     rain.setLowLife(2); // Each particle lasts atleast 2 
@@ -149,6 +152,18 @@ public class MapAppState extends BaseAppState
     rain.setEndColor(new ColorRGBA(1f, 1f, 1.0f, 1f)); // End white
     rain.setParticlesPerSec(rainParticlesPerSec); // How many particles per sec  
     main.getRootNode().attachChild(rain);
+    }
+    
+    /**
+     * This method adds a rain sound effect to the map when there is rain.
+     */
+    private void initRainAudio(){
+    rainAudio = new AudioNode(main.getAssetManager(), "Sounds/Rain.wav", false);
+    rainAudio.setPositional(false); //The noise is not positional
+    rainAudio.setLooping(true); //While the noise is playing it will loop
+    rainAudio.setVolume(2); //Sets the volume of the noise
+    main.getRootNode().attachChild(rainAudio);
+    rainAudio.play();
     }
 
     
