@@ -19,6 +19,8 @@ import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * This class contains basic data needed by the entire game.
@@ -97,6 +99,28 @@ public class Main extends SimpleApplication
         generateProceduralMap();
         initCamera();
     }
+    
+    
+        //Game Objects
+    private final ArrayList<Tree> TREES = new ArrayList<>();
+    
+        //Random
+    Random gen = new Random();
+    
+    public void placeTrees()  
+    {
+        
+        Vector3f treeLoc;
+        
+        int x = gen.nextInt(MAP_SIZE) - (int) (.5f * MAP_SIZE);
+        int z = gen.nextInt(MAP_SIZE) - (int) (.5f * MAP_SIZE);
+        treeLoc = coordinateOf(x, z);
+        
+        
+        TREES.add(new Tree(assetManager, rootNode, BULLET_APP_STATE, treeLoc, 1, false));
+        
+    }
+    
     
     /**
      * Set JME3 global GUI variables
