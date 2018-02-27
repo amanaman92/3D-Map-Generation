@@ -36,7 +36,7 @@ public class Main extends SimpleApplication
     //private final static InputManager INPUT_MANAGER = new InputManager(null, null, null, null);
     //Make input manager here and make function getInputManager; OVERRIDE IT.
     private final BaseAppState MAP_APP_STATE = new MapAppState(),
-    HUD_APP_STATE = new HUDAppState();
+            HUD_APP_STATE = new HUDAppState();
     private final BulletAppState BULLET_APP_STATE = new BulletAppState();
     private TerrainQuad terrain;
     private final int MAP_SIZE = 1024;

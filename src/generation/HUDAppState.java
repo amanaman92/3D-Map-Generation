@@ -22,7 +22,7 @@ public class HUDAppState extends BaseAppState{
     private int treeNum = 0;
     private int weatherIndex = 0;
     private String [] weathers = {"Sunny", "Rain", "Snow"};
-    //private final HUDInputManager HUD_INPUT_MANAGER = new HUDInputManager();
+    private final HUDInputManager HUD_INPUT_MANAGER = new HUDInputManager();
        
     //TODO: Test out to see if the launchGame does it job when GUI is added. 
     //I predict that if true, it will run both the text and gui. What about when false? Will it run?
@@ -126,14 +126,14 @@ public class HUDAppState extends BaseAppState{
                 });
         */
 
-        /*
+        
         HUD_INPUT_MANAGER.addButton(incTree);
         HUD_INPUT_MANAGER.addButton(decTree);
         HUD_INPUT_MANAGER.addButton(weatherUp);
         HUD_INPUT_MANAGER.addButton(weatherDown);
         HUD_INPUT_MANAGER.addButton(createTerrainButton);
         
-          */      
+                
         BitmapText hpText = new BitmapText(guiFont, false);
         hpText.setText("YAY! TEXT DISPLAY WORKS");
         
