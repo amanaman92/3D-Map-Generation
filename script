@@ -1,0 +1,12 @@
+#!/bin/bash
+
+clear
+
+echo "Run the build.xml ant script to build the .jar game file"
+echo
+
+ant -lib /lib
+
+cd dist
+
+java -jar Procedural_Generation.jar
