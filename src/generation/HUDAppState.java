@@ -1,5 +1,5 @@
 package generation;
-import java.awt.*;
+
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.font.BitmapFont;
@@ -7,26 +7,18 @@ import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
 import java.awt.Dimension;
-import com.jme3.ui.Picture;
-import com.jme3.asset.AssetManager;
+
 /**
  * This class control I / O and display for the HUD (GUI).
- * @author Cary Wang
+ * @author jeffr
  */
-public class HUDAppState extends BaseAppState{
+public class HUDAppState extends BaseAppState
+{
     private Main main;
     private Node guiNode;
     private BitmapFont guiFont;
     private Dimension screenSize;
-    
-    private int treeNum = 0;
-    private int weatherIndex = 0;
-    private String [] weathers = {"Sunny", "Rain", "Snow"};
-    //private final HUDInputManager HUD_INPUT_MANAGER = new HUDInputManager();
-       
-    //TODO: Test out to see if the launchGame does it job when GUI is added. 
-    //I predict that if true, it will run both the text and gui. What about when false? Will it run?
-    //Or will it be blank with the gui displayed? Will be changed by a method called launchGame.
+
     private boolean launchGame = true; //change to false when GUI added
     
     /**
@@ -44,152 +36,20 @@ public class HUDAppState extends BaseAppState{
         createMainMenu();
     }
     
-    
     /**
      * Creates the main menu, where most or all UI elements should be placed
-     * 
-     * Will need to be able to create much of
      */
-    
-    public void createText(String s){
-        BitmapText hpText = new BitmapText(guiFont, false);
-        hpText.setText(s);
-        
-    }
-    public String getWeather(int index){
-        return weathers[index];
-    }
     private void createMainMenu()
     {
-        /** Will need to specifically create buttons to name in order to avoid confusion.
-         * 
-         *
-         *
-         */
-        
-        //2 button for tree count(up and down); two(up and down) for weather, one for creating the terrain itself.
-        
-        //TODO: set each coords to be less hardcoded and more for the screen size.
-        
- 
-        HUDButton incTree = new HUDButton(new Rectangle(20, 20, 20, 20));
-        HUDButton decTree = new HUDButton(new Rectangle(30, 30, 20, 20));
-        HUDButton weatherUp = new HUDButton(new Rectangle(40, 40, 20, 20));
-        HUDButton weatherDown = new HUDButton(new Rectangle(50, 50, 20, 20));
-        HUDButton createTerrainButton = new HUDButton(new Rectangle(20, 20, 20, 20));
-        
-        
-        //TODO: Make a setter method for increasing the private treeNum Var by 1, as public method.
-        
-        incTree.setHUDButtonListener(new HUDButtonListener()
-                {
-                    @Override
-                    public void onAction() 
-                    {
-                        incTree();
-                        createText(treeNum);
-                    }
-                });
-        
-        decTree.setHUDButtonListener(new HUDButtonListener()
-                {
-                    @Override
-                    public void onAction() 
-                    {
-                        decTree();
-                        createText(treeNum);
-                    }
-                });
-        /*
-        weatherUp.setHUDButtonListener(new HUDButtonListener()
-                {
-                    @Override
-                    public void onAction() 
-                    {
-                        weatherIndex++;
-                        createText(weathers[weatherIndex]);
-                        //Note to self: Why can't you just directly increment weatherIndex++ and instead use a getter method for it?
-                        //That is, why would you have to be in a position of saying to make it final?
-                        
-                        createText(weathers[weatherIndex]);
-                    }
-                });
-        
-        weatherDown.setHUDButtonListener(new HUDButtonListener()
-                {
-                    @Override
-                    public void onAction() 
-                    {
-                        weatherIndex--;
-                        createText(weathers[weatherIndex]);
-                    }
-                });
-        */
-
-        /*
-        HUD_INPUT_MANAGER.addButton(incTree);
-        HUD_INPUT_MANAGER.addButton(decTree);
-        HUD_INPUT_MANAGER.addButton(weatherUp);
-        HUD_INPUT_MANAGER.addButton(weatherDown);
-        HUD_INPUT_MANAGER.addButton(createTerrainButton);
-        
-          */      
         BitmapText hpText = new BitmapText(guiFont, false);
         hpText.setText("YAY! TEXT DISPLAY WORKS");
-        
-        //TODO: set texts that add in the variables for trees and so forth.
-        /*
-        BitmapText hpText2 = new BitmapText(guiFont, false);
-        hpText2.setText("YAY! TEXT DISPLAY WORKS");
-        */
-        //Line 50 - Line 56 is mine.
-        AssetManager a = main.getAssetManager();
-        Picture guiPict = new Picture("guiBackground");
-        guiPict.setImage(a, "GUIComponent/guiBG.png", true);
-        guiPict.setWidth(screenSize.width/2);
-        guiPict.setHeight(screenSize.height);
-        guiPict.setPosition(screenSize.width/4, screenSize.height/4);
-        guiNode.attachChild(guiPict);
-        
-        
-        /** TODO: Add some integer variable as a string to be placed on the screen, and then be able to
-         *  have it increase by 1 per single press, or decrease by 1 per single press.
-         * 
-         * To do that(Very high level, may overlook the low level stuff); I will need to
-         * 
-         * 1. Make a button.
-         * 
-         * 2. Set that button to increase variable number by 1 or - 1.
-         * 
-         * 3. Position two buttons together to serve as up/down counters
-         * 
-         * 4. Have the text update the number. That is, if number is 1, set it to be 1. 
-         * If nothing changes from 0, keep it at 0. 
-         * 
-         **/ 
-
         hpText.setSize(guiFont.getCharSet().getRenderedSize());
         hpText.setColor(ColorRGBA.Red);
         hpText.setSize(50);
         hpText.setLocalTranslation(screenSize.width / 2, screenSize.height / 2, 0);
         guiNode.attachChild(hpText);
     }
-   
-    public void incTree(){
-        treeNum++;
-    }
-    public void decTree(){
-        treeNum--;
-    }
-    public void incWeatherChoice(){
-        treeNum++;
-    }
-    public void decWeatherChoice(){
-        treeNum--;
-    }
-    public void launchGame(){
-        launchGame = true;   
-    }
+
     /**
      * This cleans up the AppState for removal. Not called
      *      directly from user code.

@@ -53,7 +53,7 @@ public class HUDButton
     /**
      * This code is called when the button is clicked.
      */
-public void onClick()
+    public void onClick()
     {
         hudButtonListener.onAction();
     }
