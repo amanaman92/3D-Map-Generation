@@ -19,6 +19,7 @@ import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import com.jme3.input.InputManager;
 
 /**
  * This class contains basic data needed by the entire game.
@@ -32,9 +33,10 @@ public class Main extends SimpleApplication
     private static final Main MAIN = new Main();
     private static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
     private final static int MAX_FRAMERATE = 100;
-    
+    //private final static InputManager INPUT_MANAGER = new InputManager(null, null, null, null);
+    //Make input manager here and make function getInputManager; OVERRIDE IT.
     private final BaseAppState MAP_APP_STATE = new MapAppState(),
-            HUD_APP_STATE = new HUDAppState();
+    HUD_APP_STATE = new HUDAppState();
     private final BulletAppState BULLET_APP_STATE = new BulletAppState();
     private TerrainQuad terrain;
     private final int MAP_SIZE = 1024;
@@ -47,6 +49,8 @@ public class Main extends SimpleApplication
      *      (see the instance variables)
      */
     private Main(){}
+    
+    
     
     /**
      * Program execution begins here. Do not modify this method
@@ -63,7 +67,6 @@ public class Main extends SimpleApplication
         settings.setFullscreen(true);
         settings.setResolution(SCREEN_SIZE.width, SCREEN_SIZE.height);
         MAIN.setSettings(settings);
-        
         //Begin game execution
         MAIN.start();
     }
@@ -78,7 +81,6 @@ public class Main extends SimpleApplication
     {   
         //Init Global Variables / Data
         initJME3GlobalGUI();
-        
         //Init GUI App State
         stateManager.attach(HUD_APP_STATE);
     }
@@ -95,7 +97,13 @@ public class Main extends SimpleApplication
         
         //Init Game Variables / Data
         generateProceduralMap();
+        placeTrees();
         initCamera();
+    }
+    
+    public void placeTrees()
+    {
+        
     }
     
     /**
@@ -237,6 +245,7 @@ public class Main extends SimpleApplication
      */
     public static Main getMain()
     {
+        System.out.println("getMain");
         return MAIN;
     }
     
@@ -245,6 +254,7 @@ public class Main extends SimpleApplication
      */
     public Dimension getScreenSize()
     {
+        System.out.println("Hello! screenSize");
         return SCREEN_SIZE;
     }
     
@@ -255,4 +265,16 @@ public class Main extends SimpleApplication
     {
         return DEBUG;
     }
+    
+    /**
+     * @return the SimpleApplication's default inputManager object
+     */
+    @Override
+    public InputManager getInputManager()
+    {
+        System.out.println("Hello!");
+        return this.inputManager;
+    }
+    
 }
+    //Lines 269 - 271 is what I wrote
