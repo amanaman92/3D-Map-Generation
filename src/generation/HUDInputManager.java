@@ -27,8 +27,16 @@ public class HUDInputManager implements ActionListener
      */
     public HUDInputManager()
     {
+        System.out.println("1");
         Main main = Main.getMain();
+        System.out.println("2");
+        if (main == null) {
+            System.out.println("NULL!");
+        }
+        //So when main tries to get input manager, it is preventing the 
         INPUT_MANAGER = main.getInputManager();
+        //INPUT_MANAGER = main.getInputManager();
+        System.out.println("3");
         SCREEN_SIZE = main.getScreenSize();
         initInputMapping();
     }
@@ -55,11 +63,14 @@ public class HUDInputManager implements ActionListener
         Point clickLocation = vector2fToPoint(INPUT_MANAGER.getCursorPosition());
         if(name.equals(LEFT_CLICK) && isPressed)
         {
+            System.out.println("LEFT CLICK Xpos: " + clickLocation.x);
+            System.out.println("LEFT CLICK Ypos: " + clickLocation.y);
             for(HUDButton HUD_Button : HUD_BUTTONS)
             {
                 if(HUD_Button.getButtonBounds().contains(clickLocation))
                 {
                     HUD_Button.onClick();
+                    //onClicked goes into onAction, which is in turn referring to the HUDButtonListener Abs method.
                 }
             }
         }

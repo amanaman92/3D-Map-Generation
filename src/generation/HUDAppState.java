@@ -18,8 +18,15 @@ public class HUDAppState extends BaseAppState{
     private Node guiNode;
     private BitmapFont guiFont;
     private Dimension screenSize;
-    private final HUDInputManager HUD_INPUT_MANAGER = new HUDInputManager();
-
+    
+    private int treeNum = 0;
+    private int weatherIndex = 0;
+    private String [] weathers = {"Sunny", "Rain", "Snow"};
+    //private final HUDInputManager HUD_INPUT_MANAGER = new HUDInputManager();
+       
+    //TODO: Test out to see if the launchGame does it job when GUI is added. 
+    //I predict that if true, it will run both the text and gui. What about when false? Will it run?
+    //Or will it be blank with the gui displayed? Will be changed by a method called launchGame.
     private boolean launchGame = true; //change to false when GUI added
     
     /**
@@ -37,28 +44,104 @@ public class HUDAppState extends BaseAppState{
         createMainMenu();
     }
     
+    
     /**
      * Creates the main menu, where most or all UI elements should be placed
      * 
      * Will need to be able to create much of
      */
+    
+    public void createText(String s){
+        BitmapText hpText = new BitmapText(guiFont, false);
+        hpText.setText(s);
+        
+    }
+    public String getWeather(int index){
+        return weathers[index];
+    }
     private void createMainMenu()
     {
-        HUDButton b = new HUDButton(new Rectangle(20, 20, 20, 20));
-        b.setHUDButtonListener(new HUDButtonListener()
+        /** Will need to specifically create buttons to name in order to avoid confusion.
+         * 
+         *
+         *
+         */
+        
+        //2 button for tree count(up and down); two(up and down) for weather, one for creating the terrain itself.
+        
+        //TODO: set each coords to be less hardcoded and more for the screen size.
+        
+ 
+        HUDButton incTree = new HUDButton(new Rectangle(20, 20, 20, 20));
+        HUDButton decTree = new HUDButton(new Rectangle(30, 30, 20, 20));
+        HUDButton weatherUp = new HUDButton(new Rectangle(40, 40, 20, 20));
+        HUDButton weatherDown = new HUDButton(new Rectangle(50, 50, 20, 20));
+        HUDButton createTerrainButton = new HUDButton(new Rectangle(20, 20, 20, 20));
+        
+        
+        //TODO: Make a setter method for increasing the private treeNum Var by 1, as public method.
+        
+        incTree.setHUDButtonListener(new HUDButtonListener()
                 {
                     @Override
                     public void onAction() 
                     {
-                        //do something with the buton
+                        incTree();
+                        createText(treeNum);
                     }
                 });
-        HUD_INPUT_MANAGER.addButton(b);
- 
-                
+        
+        decTree.setHUDButtonListener(new HUDButtonListener()
+                {
+                    @Override
+                    public void onAction() 
+                    {
+                        decTree();
+                        createText(treeNum);
+                    }
+                });
+        /*
+        weatherUp.setHUDButtonListener(new HUDButtonListener()
+                {
+                    @Override
+                    public void onAction() 
+                    {
+                        weatherIndex++;
+                        createText(weathers[weatherIndex]);
+                        //Note to self: Why can't you just directly increment weatherIndex++ and instead use a getter method for it?
+                        //That is, why would you have to be in a position of saying to make it final?
+                        
+                        createText(weathers[weatherIndex]);
+                    }
+                });
+        
+        weatherDown.setHUDButtonListener(new HUDButtonListener()
+                {
+                    @Override
+                    public void onAction() 
+                    {
+                        weatherIndex--;
+                        createText(weathers[weatherIndex]);
+                    }
+                });
+        */
+
+        /*
+        HUD_INPUT_MANAGER.addButton(incTree);
+        HUD_INPUT_MANAGER.addButton(decTree);
+        HUD_INPUT_MANAGER.addButton(weatherUp);
+        HUD_INPUT_MANAGER.addButton(weatherDown);
+        HUD_INPUT_MANAGER.addButton(createTerrainButton);
+        
+          */      
         BitmapText hpText = new BitmapText(guiFont, false);
         hpText.setText("YAY! TEXT DISPLAY WORKS");
         
+        //TODO: set texts that add in the variables for trees and so forth.
+        /*
+        BitmapText hpText2 = new BitmapText(guiFont, false);
+        hpText2.setText("YAY! TEXT DISPLAY WORKS");
+        */
         //Line 50 - Line 56 is mine.
         AssetManager a = main.getAssetManager();
         Picture guiPict = new Picture("guiBackground");
@@ -91,7 +174,22 @@ public class HUDAppState extends BaseAppState{
         hpText.setLocalTranslation(screenSize.width / 2, screenSize.height / 2, 0);
         guiNode.attachChild(hpText);
     }
-
+   
+    public void incTree(){
+        treeNum++;
+    }
+    public void decTree(){
+        treeNum--;
+    }
+    public void incWeatherChoice(){
+        treeNum++;
+    }
+    public void decWeatherChoice(){
+        treeNum--;
+    }
+    public void launchGame(){
+        launchGame = true;   
+    }
     /**
      * This cleans up the AppState for removal. Not called
      *      directly from user code.
