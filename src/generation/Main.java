@@ -37,10 +37,11 @@ public class Main extends SimpleApplication
     //private final static InputManager INPUT_MANAGER = new InputManager(null, null, null, null);
     //Make input manager here and make function getInputManager; OVERRIDE IT.
 
-    private  BaseAppState mapAppState,             
+    private  BaseAppState mapAppState, 
             hudAppState;
-
-    private final BulletAppState BULLET_APP_STATE = new BulletAppState();
+    
+    
+    private BulletAppState BULLET_APP_STATE = new BulletAppState();
     private TerrainQuad terrain;
     private final int MAP_SIZE = 1024;
     private final boolean DEBUG = true;
@@ -294,18 +295,23 @@ public class Main extends SimpleApplication
     {
         return DEBUG;
     }
-}
-
-    
     /**
      * @return the SimpleApplication's default inputManager object
-     */
+     
     @Override
     public InputManager getInputManager()
     {
         //System.out.println("Hello!");
         return this.inputManager;
     }
+    * 
+    * 
+    */ 
     
 }
+
+    
+    
+    
+
     //Lines 269 - 271 is what I wrote

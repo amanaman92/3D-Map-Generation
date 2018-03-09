@@ -10,4 +10,5 @@ package generation;
 public abstract class HUDButtonListener 
 {
     public abstract void onAction();
+    
 }
