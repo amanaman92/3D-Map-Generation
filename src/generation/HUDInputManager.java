@@ -59,6 +59,7 @@ public class HUDInputManager implements ActionListener
             {
                 if(HUD_Button.getButtonBounds().contains(clickLocation))
                 {
+                    System.out.println("Are you here? If so, you clicked the button.");
                     HUD_Button.onClick();
                 }
             }
@@ -101,4 +102,7 @@ public class HUDInputManager implements ActionListener
     {
         return new Point((int) v.x, SCREEN_SIZE.height - (int) v.y);
     }
-}
+    public void uncapMouse(){
+        INPUT_MANAGER.setCursorVisible(true);
+    }
+ }
