@@ -21,9 +21,9 @@ public class HUDAppState extends BaseAppState{
     private BitmapFont guiFont;
     private Dimension screenSize;
     
-    private int treeNum = 0;
-    private int weatherIndex = 0;
-    private String [] weathers = {"Sunny", "Rain", "Snow"};
+    public static int treeNum = 0;
+    public static int weatherIndex = 0;
+    private static String [] weathers = {"Sunny", "Rain", "Snow"};
     private final HUDInputManager HUD_INPUT_MANAGER = new HUDInputManager();
     private BitmapText treeNumText, weatherText, createTerrainText;
     //TODO: Test out to see if the launchGame does it job when GUI is added. 
@@ -82,6 +82,10 @@ public class HUDAppState extends BaseAppState{
             System.out.println("Hi! Can you see me? If you can, that means that you are able to go inside the .setHUDButton Listener class!");
     }
     */
+    public void setSizeAtCenter(){
+        
+    
+    }
     private void createMainMenu()
     {
         /** Will need to specifically create buttons to name in order to avoid confusion.
@@ -95,15 +99,18 @@ public class HUDAppState extends BaseAppState{
         //TODO: set each coords to be less hardcoded and more for the screen size.
         
         //createText("Sigh", screenSize.width / 4, screenSize.width / 2, screenSize.height / 2);
-        Rectangle incTreeButton = new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2);
+        Rectangle incTreeButtonBox = new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2);
+        Rectangle decTreeButtonBox = new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2);
+        Rectangle weatherUpButtonBox = new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2);
+        Rectangle weatherDownButtonBox = new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2);
+        Rectangle createTerrainButtonBox = new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2);
+
         //Rectangle createTerrainBox = new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2);
         //HUDButton incTree = new HUDButton(new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2));
         HUDButton decTree = new HUDButton(new Rectangle(30, 30, 20, 20));
         HUDButton weatherUp = new HUDButton(new Rectangle(40, 40, 20, 20));
         HUDButton weatherDown = new HUDButton(new Rectangle(50, 50, 20, 20));
-        //HUDButton createTerrainButton = new HUDButton(new Rectangle(20, 20, 20, 20));
-        HUDButton createTerrainButton = new HUDButton(incTreeButton);
-        //HUD_INPUT_MANAGER.addButton(incTree);
+        HUDButton createTerrainButton = new HUDButton(incTreeButtonBox);
         HUD_INPUT_MANAGER.addButton(decTree);
         HUD_INPUT_MANAGER.addButton(weatherUp);
         HUD_INPUT_MANAGER.addButton(weatherDown);
@@ -149,8 +156,8 @@ public class HUDAppState extends BaseAppState{
         createTerrainText.setText("Make Terrain!");
         createTerrainText.setSize(guiFont.getCharSet().getRenderedSize());
         createTerrainText.setColor(ColorRGBA.Red);
-        createTerrainText.setSize(screenSize.width / 4);
-        createTerrainText.setLocalTranslation(screenSize.width / 2, screenSize.height / 2, 0);
+        createTerrainText.setSize(screenSize.width / 64);
+        createTerrainText.setLocalTranslation(screenSize.width / 2, screenSize.height / 2, 1);
         guiNode.attachChild(createTerrainText);
         
         System.out.println("After instantiating treeNumText; there would be a problem if it is still null pointer at this point");
@@ -180,7 +187,7 @@ public class HUDAppState extends BaseAppState{
                         
                     }
                 });
-        /*
+        
         decTree.setHUDButtonListener(new HUDButtonListener()
                 {
                     @Override
@@ -259,44 +266,27 @@ public class HUDAppState extends BaseAppState{
         AssetManager a = main.getAssetManager();
         Picture guiPict = new Picture("guiBackground");
         guiPict.setImage(a, "GUIComponent/guiBG.png", true);
+       
+        /*
+            Larger version. It appears to be okay. Factor is that for every 2x of ratio,
+            you must decrease the posX by screenSize.width /8 more and decrease by screenSize.height / 4 more.
+        */
+        
+        int imageCenterPosX = screenSize.width/4;
+        int imageCenterPosY = screenSize.height/2 - screenSize.height / 2;
+        guiPict.setWidth(screenSize.width/2);
+        guiPict.setHeight(screenSize.height/1);
+        
+        /*
         int imageCenterPosX = screenSize.width/4 + screenSize.width / 8;
         int imageCenterPosY = screenSize.height/2 - screenSize.height / 4;
         guiPict.setWidth(screenSize.width/4);
         guiPict.setHeight(screenSize.height/2);
+        */
         //guiPict.setPosition(screenSize.width/4, imageCenterPosY);
         guiPict.setPosition(imageCenterPosX, imageCenterPosY);
         guiNode.attachChild(guiPict);
         
-        
-        //IMPORTANT TO NOTE: AN IMAGE IS CENTERED ON THE BOTTOM LEFT PART, WHERE IT IS CONSIDERED TO BE (0,0).
-        //Must give diagonal correction to solve.
-        
-        
-        
-        /** TODO: Add some integer variable as a string to be placed on the screen, and then be able to
-         *  have it increase by 1 per single press, or decrease by 1 per single press.
-         * 
-         * To do that(Very high level, may overlook the low level stuff); I will need to
-         * 
-         * 1. Make a button.
-         * 
-         * 2. Set that button to increase variable number by 1 or - 1.
-         * 
-         * 3. Position two buttons together to serve as up/down counters
-         * 
-         * 4. Have the text update the number. That is, if number is 1, set it to be 1. 
-         * If nothing changes from 0, keep it at 0. 
-         * 
-         **/ 
-        /*
-        BitmapText hpText = new BitmapText(guiFont, false);
-        hpText.setText("YAY! TEXT DISPLAY WORKS");
-        hpText.setSize(guiFont.getCharSet().getRenderedSize());
-        hpText.setColor(ColorRGBA.Red);
-        hpText.setSize(50);
-        hpText.setLocalTranslation(screenSize.width / 2, screenSize.height / 2, 0);
-        guiNode.attachChild(hpText);
-        */
     }
                 
    public void incTree(){

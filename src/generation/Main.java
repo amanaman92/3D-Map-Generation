@@ -105,7 +105,8 @@ public class Main extends SimpleApplication
         
         //Init Game Variables / Data
         generateProceduralMap();
-        placeTrees(100);
+        
+        placeTrees(HUDAppState.treeNum);
         initCamera();
     }
     
