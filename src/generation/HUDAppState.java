@@ -82,10 +82,7 @@ public class HUDAppState extends BaseAppState{
             System.out.println("Hi! Can you see me? If you can, that means that you are able to go inside the .setHUDButton Listener class!");
     }
     */
-    public void setSizeAtCenter(){
-        
-    
-    }
+
     private void createMainMenu()
     {
         /** Will need to specifically create buttons to name in order to avoid confusion.
@@ -258,19 +255,44 @@ public class HUDAppState extends BaseAppState{
         //caused the problem of ExceptionInInitializer in the first place when running. It is a
         //run time error.
         
+        
+        
         AssetManager a = main.getAssetManager();
+        Picture guiPictBG = new Picture("PNG GUI Background Box");
+        guiPictBG.setImage(a, "GUIComponent/PNG GUI Background Box.png", true);
+        Picture guiPictArrow = new Picture("GUIArrowComponent");
+        int imageCenterPosX = screenSize.width/4;
+        int imageCenterPosY = screenSize.height/2 - screenSize.height / 2;
+        guiPictBG.setWidth(screenSize.width/2);
+        guiPictBG.setHeight(screenSize.height/1);
+        
+        guiPictBG.setWidth(screenSize.width/2);
+        guiPictBG.setHeight(screenSize.height/1);
+        guiPictBG.setPosition(imageCenterPosX, imageCenterPosY);
+        guiNode.attachChild(guiPictBG);
+        
+        
+        /*
+        
+        Larger version. It appears to be okay. Factor is that for every 2x of ratio,
+            you must decrease the posX by screenSize.width /8 more and decrease by screenSize.height / 4 more.
+        
         Picture guiPict = new Picture("guiBackground");
         guiPict.setImage(a, "GUIComponent/guiBG.png", true);
-       
-        /*
-            Larger version. It appears to be okay. Factor is that for every 2x of ratio,
-            you must decrease the posX by screenSize.width /8 more and decrease by screenSize.height / 4 more.
-        */
+        
         
         int imageCenterPosX = screenSize.width/4;
         int imageCenterPosY = screenSize.height/2 - screenSize.height / 2;
         guiPict.setWidth(screenSize.width/2);
         guiPict.setHeight(screenSize.height/1);
+        
+        int imageCenterPosX = screenSize.width/4;
+        int imageCenterPosY = screenSize.height/2 - screenSize.height / 2;
+        guiPict.setWidth(screenSize.width/2);
+        guiPict.setHeight(screenSize.height/1);
+        guiPict.setPosition(imageCenterPosX, imageCenterPosY);
+        guiNode.attachChild(guiPict);
+        */
         
         /*
         int imageCenterPosX = screenSize.width/4 + screenSize.width / 8;
@@ -279,8 +301,7 @@ public class HUDAppState extends BaseAppState{
         guiPict.setHeight(screenSize.height/2);
         */
         //guiPict.setPosition(screenSize.width/4, imageCenterPosY);
-        guiPict.setPosition(imageCenterPosX, imageCenterPosY);
-        guiNode.attachChild(guiPict);
+        
         
     }
                 
