@@ -110,11 +110,10 @@ public class Main extends SimpleApplication
         initCamera();
     }
     
-    
-        //Game Objects
+    //Game Objects
     private final ArrayList<Tree> TREES = new ArrayList<>();
     
-        //Random
+    //Random
     Random gen = new Random();
     
     

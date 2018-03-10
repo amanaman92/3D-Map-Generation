@@ -27,7 +27,6 @@ public class MapAppState extends BaseAppState
     private Main main;
     private Node rootNode;
     private ViewPort viewPort;
-    private final AmbientLight AMBIENT_LIGHT = new AmbientLight();
     private final DirectionalLight DIRECTIONAL_LIGHT = new DirectionalLight();
     
     
@@ -99,12 +98,9 @@ public class MapAppState extends BaseAppState
      */
     private void initLight() 
     {
-        AMBIENT_LIGHT.setColor(ColorRGBA.White);
-        
         DIRECTIONAL_LIGHT.setDirection(new Vector3f(-1, -1, 0));
         DIRECTIONAL_LIGHT.setColor(ColorRGBA.White);
         
-        rootNode.addLight(AMBIENT_LIGHT);
         rootNode.addLight(DIRECTIONAL_LIGHT);
     }
     

@@ -69,14 +69,35 @@ public enum FallOffMode
         {
             return FastMath.sqrt(distance) * fallOffScalar;
         }
-    };
+    },
     
         /**
+     * Defines a linear falloff of height (constant / distance^.5)
+     */
+    NONE
+    {
+        /**
+         * Applies constant height (no fall-off)
          * @param distance The distance from the falloff start point
          *      to the point whose relative height change is wanted.
          * @param fallOffScalar The Scalar used to calculate fall off
          * @return The change in height the fall off starting
-         *      point should caused on this point.
+         *      point should caused on this point. In this case, the
+         *      0 is always returned.
          */
+        @Override
+        public float heightChangeAt(float distance, float fallOffScalar)
+        {
+            return 0;
+        }
+    };
+    
+    /**
+     * @param distance The distance from the falloff start point
+     *      to the point whose relative height change is wanted.
+     * @param fallOffScalar The Scalar used to calculate fall off
+     * @return The change in height the fall off starting
+     *      point should caused on this point.
+     */
     public abstract float heightChangeAt(float distance, float fallOffScalar);
 }
