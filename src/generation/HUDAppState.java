@@ -21,9 +21,9 @@ public class HUDAppState extends BaseAppState{
     private BitmapFont guiFont;
     private Dimension screenSize;
     
-    public static int treeNum = 0;
+    public static int treeNum = 100;
     public static int weatherIndex = 0;
-    private static String [] weathers = {"Sunny", "Rain", "Snow"};
+    private static String [] weathers = {"Clear", "Rain"};
     private final HUDInputManager HUD_INPUT_MANAGER = new HUDInputManager();
     private BitmapText treeNumText, weatherText, createTerrainText;
     //TODO: Test out to see if the launchGame does it job when GUI is added. 
@@ -249,6 +249,8 @@ public class HUDAppState extends BaseAppState{
                         System.out.println("You just clicked on the createTerrain Button");
                         launchGame = true;
                         System.out.println("Shouldn't you launch game at this point?");
+                        guiNode.detachAllChildren();
+                        HUD_INPUT_MANAGER.capMouse();
                     }
                 });
         

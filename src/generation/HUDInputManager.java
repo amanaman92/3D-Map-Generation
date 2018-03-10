@@ -105,4 +105,7 @@ public class HUDInputManager implements ActionListener
     public void uncapMouse(){
         INPUT_MANAGER.setCursorVisible(true);
     }
+    public void capMouse(){
+        INPUT_MANAGER.setCursorVisible(false);
+    }
  }
