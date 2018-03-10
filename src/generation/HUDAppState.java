@@ -21,15 +21,15 @@ public class HUDAppState extends BaseAppState{
     private BitmapFont guiFont;
     private Dimension screenSize;
     
-    public static int treeNum = 100;
-    public static int weatherIndex = 0;
+    private static int treeNum = 0;
+    private static int weatherIndex = 0;
     private static String [] weathers = {"Clear", "Rain"};
     private final HUDInputManager HUD_INPUT_MANAGER = new HUDInputManager();
     private BitmapText treeNumText, weatherText, createTerrainText;
     //TODO: Test out to see if the launchGame does it job when GUI is added. 
     //I predict that if true, it will run both the text and gui. What about when false? Will it run?
     //Or will it be blank with the gui displayed? Will be changed by a method called launchGame.
-    private boolean launchGame = false; //change to false when GUI added; it will bring you to the screen.
+    private static boolean launchGame = false; //change to false when GUI added; it will bring you to the screen.
     
     /**
      * This function does basic initialiation of the AppState.
@@ -74,8 +74,8 @@ public class HUDAppState extends BaseAppState{
     
     */
 
-    public String getWeather(int index){
-        return weathers[index];
+    public static String getWeather(){
+        return weathers[weatherIndex];
     }
     /*
     public void printTest(){
@@ -103,11 +103,13 @@ public class HUDAppState extends BaseAppState{
         Rectangle createTerrainButtonBox = new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2);
 
         //Rectangle createTerrainBox = new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2);
-        HUDButton incTree = new HUDButton(new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2));
-        HUDButton decTree = new HUDButton(new Rectangle(30, 30, 20, 20));
+        
+        HUDButton incTree = new HUDButton(incTreeButtonBox);
+        HUDButton decTree = new HUDButton(incTreeButtonBox);
         HUDButton weatherUp = new HUDButton(new Rectangle(40, 40, 20, 20));
         HUDButton weatherDown = new HUDButton(new Rectangle(50, 50, 20, 20));
         HUDButton createTerrainButton = new HUDButton(incTreeButtonBox);
+        HUD_INPUT_MANAGER.addButton(incTree);
         HUD_INPUT_MANAGER.addButton(decTree);
         HUD_INPUT_MANAGER.addButton(weatherUp);
         HUD_INPUT_MANAGER.addButton(weatherDown);
@@ -157,7 +159,17 @@ public class HUDAppState extends BaseAppState{
         createTerrainText.setLocalTranslation(screenSize.width / 2, screenSize.height / 4, 1);
         guiNode.attachChild(createTerrainText);
         
-        System.out.println("After instantiating treeNumText; there would be a problem if it is still null pointer at this point");
+        
+        BitmapText testText = new BitmapText(guiFont, false);
+        testText.setText("Make Terrain!");
+        testText.setSize(guiFont.getCharSet().getRenderedSize());
+        testText.setColor(ColorRGBA.Red);
+        testText.setSize(screenSize.width / 64);
+        testText.setLocalTranslation(screenSize.width / 2, screenSize.height / 4, 1);
+        guiNode.attachChild(testText);
+        
+        //System.out.println("After instantiating treeNumText; there would be a problem if it is still null pointer at this point");
+        //Problem was that making method would cause pass by value problem, preventing the actual variable from being changed outside the method.
         
         incTree.setHUDButtonListener(new HUDButtonListener()
                 {
@@ -209,14 +221,13 @@ public class HUDAppState extends BaseAppState{
                     @Override
                     public void onAction() 
                     {
+
                         weatherIndex++;
                         System.out.println("weatherIndex++ done");
                         String s = weathers[weatherIndex];
                         System.out.println("String is 's' now weather");
-                        
-                        //Note to self: Why can't you just directly increment weatherIndex++ and instead use a getter method for it?
-                        //That is, why would you have to be in a position of saying to make it final?
-                        
+                        weatherText.setText(s);
+                        System.out.println("inc weatherIndex");
                     }
                 });
         
@@ -229,6 +240,9 @@ public class HUDAppState extends BaseAppState{
                         System.out.println("weatherIndex-- done");
                         String s = weathers[weatherIndex];
                         System.out.println("String is 's' now weather");
+                        weatherText.setText(s);
+                        System.out.println("dec weatherIndex");
+
                     }
                 });
         
@@ -240,12 +254,16 @@ public class HUDAppState extends BaseAppState{
                        It won't even print the statements down there, it will just get clicked and
                        get a null pointer exception.
                        
+                    SOLVED: Problem was the fact that the button existed and has same size, which was in turn not
+                        added in input manager as needed.
+                    
                     */
                     public void onAction() 
                     {
                         System.out.println("You just clicked on the createTerrain Button");
                         launchGame = true;
                         System.out.println("Shouldn't you launch game at this point?");
+                        //Bottom part deals with detaching all GUI components; good to know, it is indeed very possible to do this in one function.
                         guiNode.detachAllChildren();
                         HUD_INPUT_MANAGER.capMouse();
                     }
@@ -254,9 +272,15 @@ public class HUDAppState extends BaseAppState{
         //Mistake: You placed HUD_INPUT_MANAGER.addButton down here rather than up there; that 
         //caused the problem of ExceptionInInitializer in the first place when running. It is a
         //run time error.
+        /* Methodologically speaking: You cannot have a button function without being placed inside, right?
+           It is like telling a sensor to 
+        
+        */
         
         
-        
+        /** Actual area of the pictures that we need to deal with.
+         * 
+         */
         AssetManager a = main.getAssetManager();
         Picture guiPictBG = new Picture("PNG GUI Background Box");
         guiPictBG.setImage(a, "GUIComponent/PNG GUI Background Box.png", true);
@@ -272,11 +296,16 @@ public class HUDAppState extends BaseAppState{
         guiNode.attachChild(guiPictBG);
         
         
-        /*
         
-        Larger version. It appears to be okay. Factor is that for every 2x of ratio,
-            you must decrease the posX by screenSize.width /8 more and decrease by screenSize.height / 4 more.
         
+        
+        
+        
+        
+        /**  Larger version of both the arrow and screen components clumped together in one
+         **  picture; it appears to be okay. Factor is that for every 2x of ratio,
+         **  you must decrease the posX by screenSize.width /8 more and decrease by screenSize.height / 4 more.
+
         Picture guiPict = new Picture("guiBackground");
         guiPict.setImage(a, "GUIComponent/guiBG.png", true);
         
@@ -305,20 +334,26 @@ public class HUDAppState extends BaseAppState{
         
     }
                 
-   public void incTree(){
+   public static void incTree(){
         treeNum++;
     }
-    public void decTree(){
+    public static void decTree(){
         treeNum--;
     }
-    public void incWeatherChoice(){
+    public static void incWeatherChoice(){
         weatherIndex++;
     }
-    public void decWeatherChoice(){
+    public static void decWeatherChoice(){
         weatherIndex--;
     }
-    public void launchGame(){
+    public static void launchGame(){
         launchGame = true;   
+    }
+    public static int getTreeNum(){
+        return treeNum;
+    }
+    public static int getWeatherIndex(){
+        return weatherIndex;
     }
     
     /**

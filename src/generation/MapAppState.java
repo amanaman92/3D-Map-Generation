@@ -35,10 +35,7 @@ public class MapAppState extends BaseAppState
     private float rainEmitterRadius = 1000f;
     private float rainEmitterHeight = 50f;
     private int rainParticlesPerSec = 10000;
-    
-    
-    
-    
+     
     /**
      * This function does basic initialiation of the AppState.
      *      Not called directly from user code.
@@ -56,6 +53,30 @@ public class MapAppState extends BaseAppState
         initSky();
         initLight();
         initRain();
+        HUDAppState h = new HUDAppState();
+        if(HUDAppState.getWeatherIndex() == 0){
+            main.getRootNode().detachChild(rain);
+        } else if(HUDAppState.getWeatherIndex() == 1){
+            
+        } else if(HUDAppState.getWeatherIndex() == 2){
+            
+        }
+        /** Previous way of getting the weather string that was inputted, which led to null pointer exception due to 
+         * HUDAppState not being made. Will attempt to do thru main.
+         * 
+         *System.out.println("Hello! If you see this, you may be about to hit null pointer exception!");
+         //Clearly, HUDAppState is not initalized at this time, which means that there has to be a way to do so.
+         hudAppState = new HUDAppState();
+         System.out.println("hudAppState initialized to HUDAppState program");
+         if(hudAppState.getWeather().equals("Rain")){
+
+            initRain();
+
+
+        } else if(HUDAppState.getWeather().equals("Snow")){
+            
+        } 
+        */
     }
 
     /**
@@ -115,6 +136,19 @@ public class MapAppState extends BaseAppState
         main.getRootNode().attachChild(SkyFactory.createSky(main.getAssetManager(), 
                 "Textures/Skysphere.jpg", SkyFactory.EnvMapType.SphereMap));
     }
+ 
+    public Main getMain(){
+        return main;
+    }
+    public ParticleEmitter getRain(){
+        return rain;
+    }
+
+    
+    //Idea: Use the main from MapAppState to be able to try and detach the child of rain on Main.java
+    //Which is where the hudAppState is located at. When that is done, you'd be able to control rain.
+    //I'd need a method to be able to do so by returning main, then doing the getRootNode and detachChild via main.
+    
     
     /*
      * This method creates rain particles in a sphere centered on the camera.
@@ -132,7 +166,8 @@ public class MapAppState extends BaseAppState
             "Effects/raindrop.png")); // The image is Texture type, white line
     rain.setMaterial(material);  
     rain.setLocalTranslation(main.getCamera().getLocation());
-    rain.getParticleInfluencer().setInitialVelocity(new Vector3f(0.0f, -1.1f, 0.0f));
+    rain.getParticleInfluencer().setInitialVelocity
+        (new Vector3f(0.0f, -1.1f, 0.0f));
     rain.setGravity(0, rainGravity, 0);
     rain.setLowLife(2); // Each particle lasts atleast 2 
     rain.setHighLife(5); // Each particles lasts at most 5
