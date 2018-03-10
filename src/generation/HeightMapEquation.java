@@ -14,7 +14,7 @@ public class HeightMapEquation extends HeightLine
             TOLERANCE = .001f,
             FALL_OFF_SCALAR = .05f;
     private final int VALUE_MIN_X,
-            RADIUS = 200;
+            RADIUS = 50;
                 
     /**
      * FallOffMode is defualted to LINEAR.
@@ -23,7 +23,7 @@ public class HeightMapEquation extends HeightLine
      */
     public HeightMapEquation(HeightVector vec1, HeightVector vec2)
     {
-        this(vec1, vec2, FallOffMode.LINEAR);
+        this(vec1, vec2, FallOffMode.SQUARE_ROOT);
     }
     
     /**
@@ -65,19 +65,14 @@ public class HeightMapEquation extends HeightLine
     public float heightAt(HeightVector point)
     { 
         float distance = calcualteDistance(point);
-        if(distance < TOLERANCE)
-        {
-            return heightAt(point.getX());
-        }
-        
-        if(distance > RADIUS)
-        {
-            return point.getHeight();
-        }
-        
         float baseHeight = point.getHeight();
-        float height = baseHeight - FALL_OFF.heightChangeAt(distance, FALL_OFF_SCALAR); 
-        return height;
+        
+        if(distance < RADIUS)
+        {
+            float height = baseHeight * FALL_OFF.heightChangeAt(distance, FALL_OFF_SCALAR); 
+            return height;
+        }
+        return baseHeight;
     }
     
     /**

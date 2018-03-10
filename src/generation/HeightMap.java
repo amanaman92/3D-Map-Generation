@@ -18,9 +18,13 @@ public class HeightMap
 {
     private final float[] HEIGHT_DATA;
     private final HeightVector[][] HEIGHT_VECTORS;
-    private final int MAP_SIZE;
-    private static final float BASE_VALUE = 0;
+    private static final float BASE_VALUE = 0,
+            FRACTAL = 20;
     private final BaseTerrain TERRAIN_TYPE;
+    private final int FEATURES = 50,
+            SMOOTHING_FACTOR = 2,
+            MAP_SIZE;
+    private final HeightMapEquation[] MAP_EQS = new HeightMapEquation[FEATURES];
     
     /**
      * Creates a new Height Map (square) with a given side
@@ -56,18 +60,38 @@ public class HeightMap
      */
     public void writeHeightMap()
     {
-        //Pass 1: Init all Height Vectors with a TerrainType
+        initTerrain();
+        writeFeatures();
+        refineFeatures();
+        smoothMap();
+        createHeightData();
+        
+        if(Main.getMain().getDebug())
+        {
+            writeToDisk();
+        }
+    }
+    
+    /**
+     * Init all Height Vectors with a TerrainType
+     */
+    private void initTerrain()
+    {
         for(short x = 0; x < HEIGHT_VECTORS.length; x++)
         {
             for(short z = 0; z < HEIGHT_VECTORS[x].length; z++)
             {
-                HEIGHT_VECTORS[x][z] = new HeightVector(x, z, TERRAIN_TYPE.getHeight(x, z, MAP_SIZE) + BASE_VALUE);
+                HEIGHT_VECTORS[x][z] = new HeightVector(x, z, 
+                        TERRAIN_TYPE.getHeight(x, z, MAP_SIZE) + BASE_VALUE + RandomUtils.randomFloat(0, FRACTAL));
             }
         }
-        
-        //Pass 2: Features
-        final int FEATURES = 50;
-        HeightMapEquation[] mapEqs = new HeightMapEquation[FEATURES];
+    }
+    
+    /**
+     * Add hills and valleys to the map.
+     */
+    private void writeFeatures()
+    {
         for(int i = 0; i < FEATURES; i++)
         {
             int xLoc = RandomUtils.randomInt(0, MAP_SIZE - 1);
@@ -84,38 +108,46 @@ public class HeightMap
             HeightVector end = HEIGHT_VECTORS[x1Loc][y1Loc];
             end.setHeight(BASE_VALUE * RandomUtils.RANDOM.nextFloat() * 2);
             
-            mapEqs[i] = new HeightMapEquation(start, end);
-            for(int x = mapEqs[i].getMinX(); x < mapEqs[i].getMaxX(); x++)
+            MAP_EQS[i] = new HeightMapEquation(start, end);
+            for(int x = MAP_EQS[i].getMinX(); x < MAP_EQS[i].getMaxX(); x++)
             {
                 //Place Feature Center
-                int y = mapEqs[i].pointAt(x);
+                int y = MAP_EQS[i].pointAt(x);
                 if(y > 0 && y < HEIGHT_VECTORS[x].length)
                 {
-                    HEIGHT_VECTORS[x][y].setHeight(mapEqs[i].heightAt(x));
+                    HEIGHT_VECTORS[x][y].setHeight(MAP_EQS[i].heightAt(x));
                 }
             }
         }
-
-        //Pass 3: Refinement of features
+    }
+    
+    /**
+     * Refine features placed to remove excessively jagged sections and
+     *      other extremities. Once this is done, resolveHeight is called
+     *      on each HeightVector.
+     */
+    private void refineFeatures()
+    {
         for(short x = 0; x < HEIGHT_VECTORS.length; x++)
         {
             for(short y = 0; y < HEIGHT_VECTORS[x].length; y++)
             {
-                for(HeightMapEquation mapEq : mapEqs)
+                for(HeightMapEquation mapEq : MAP_EQS)
                 {
-                    HEIGHT_VECTORS[x][y].setHeight(mapEq.heightAt(HEIGHT_VECTORS[x][y]));
+                    HEIGHT_VECTORS[x][y].setHeightRequest(mapEq.heightAt(HEIGHT_VECTORS[x][y]));
                 }
+                HEIGHT_VECTORS[x][y].resolveHeight();
             }
         }
-
-        //Pass 4: Smooth
-        MapMath.smooth(HEIGHT_VECTORS, 2);
-        
-        createHeightData();
-        if(Main.getMain().getDebug())
-        {
-            writeToDisk();
-        }
+    }
+    
+    /**
+     * Run a general smoothing algorithm to refine and extraneous
+     *      extemities and to ensure the map "flows" well.
+     */
+    private void smoothMap()
+    {
+       MapMath.smooth(HEIGHT_VECTORS, SMOOTHING_FACTOR);
     }
     
     /**

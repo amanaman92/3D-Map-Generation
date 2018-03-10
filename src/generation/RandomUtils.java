@@ -20,10 +20,20 @@ public class RandomUtils
     /**
      * @param min The lowest acceptable random value
      * @param max The largest acceptable random value
-     * @return A random value on [min,max]
+     * @return A random int value on [min,max]
      */
     public static int randomInt(int min, int max)
     {
         return RANDOM.nextInt(max + 1) - RANDOM.nextInt(min + 1);
+    } 
+    
+    /**
+     * @param min The lowest acceptable random value
+     * @param max The largest acceptable random value
+     * @return A random float value on [min,max)
+     */
+    public static float randomFloat(float min, float max)
+    {
+        return (RANDOM.nextFloat() * (min - max)) + min;
     } 
 }
