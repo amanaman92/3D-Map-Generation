@@ -106,7 +106,7 @@ public class HUDAppState extends BaseAppState{
         Rectangle createTerrainButtonBox = new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2);
 
         //Rectangle createTerrainBox = new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2);
-        //HUDButton incTree = new HUDButton(new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2));
+        HUDButton incTree = new HUDButton(new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2));
         HUDButton decTree = new HUDButton(new Rectangle(30, 30, 20, 20));
         HUDButton weatherUp = new HUDButton(new Rectangle(40, 40, 20, 20));
         HUDButton weatherDown = new HUDButton(new Rectangle(50, 50, 20, 20));
@@ -133,13 +133,13 @@ public class HUDAppState extends BaseAppState{
         System.out.println("Before instantiating treeNumText");
         
         //createText(trees, screenSize.width / 4, screenSize.width / 2, screenSize.height / 2);
-         /*
+         
         treeNumText = new BitmapText(guiFont, false);
         treeNumText.setText(trees);
         treeNumText.setSize(guiFont.getCharSet().getRenderedSize());
         treeNumText.setColor(ColorRGBA.Red);
-        treeNumText.setSize(screenSize.width / 4);
-        treeNumText.setLocalTranslation(screenSize.width / 2, screenSize.height / 2, 0);
+        treeNumText.setSize(screenSize.width / 64);
+        treeNumText.setLocalTranslation(screenSize.width / 2, screenSize.height / 4, 1);
         guiNode.attachChild(treeNumText);
         
        
@@ -147,21 +147,21 @@ public class HUDAppState extends BaseAppState{
         weatherText.setText(trees);
         weatherText.setSize(guiFont.getCharSet().getRenderedSize());
         weatherText.setColor(ColorRGBA.Red);
-        weatherText.setSize(size);
-        weatherText.setLocalTranslation(posX, posY, 0);
+        weatherText.setSize(screenSize.width / 64);
+        weatherText.setLocalTranslation(screenSize.width / 2, screenSize.height / 2, 1);
         guiNode.attachChild(weatherText);
         
-        */
+        
         createTerrainText = new BitmapText(guiFont, false);
         createTerrainText.setText("Make Terrain!");
         createTerrainText.setSize(guiFont.getCharSet().getRenderedSize());
         createTerrainText.setColor(ColorRGBA.Red);
         createTerrainText.setSize(screenSize.width / 64);
-        createTerrainText.setLocalTranslation(screenSize.width / 2, screenSize.height / 2, 1);
+        createTerrainText.setLocalTranslation(screenSize.width / 2, screenSize.height / 4, 1);
         guiNode.attachChild(createTerrainText);
         
         System.out.println("After instantiating treeNumText; there would be a problem if it is still null pointer at this point");
-        /*
+        
         incTree.setHUDButtonListener(new HUDButtonListener()
                 {
                     @Override
@@ -206,16 +206,17 @@ public class HUDAppState extends BaseAppState{
                         }
                     }
                 });
-        //TODO: Be able to find a way to access the time duration needed to run the program.
-        //This will allow you to 
+
         weatherUp.setHUDButtonListener(new HUDButtonListener()
                 {
                     @Override
                     public void onAction() 
                     {
                         weatherIndex++;
-                        createText(weathers[weatherIndex]);
-                        System.out.println("Before setListener part");
+                        System.out.println("weatherIndex++ done");
+                        String s = weathers[weatherIndex];
+                        System.out.println("String is 's' now weather");
+                        
                         //Note to self: Why can't you just directly increment weatherIndex++ and instead use a getter method for it?
                         //That is, why would you have to be in a position of saying to make it final?
                         
@@ -228,20 +229,12 @@ public class HUDAppState extends BaseAppState{
                     public void onAction() 
                     {
                         weatherIndex--;
-                        createText(weathers[weatherIndex]);
+                        System.out.println("weatherIndex-- done");
+                        String s = weathers[weatherIndex];
+                        System.out.println("String is 's' now weather");
                     }
                 });
         
-        weatherDown.setHUDButtonListener(new HUDButtonListener()
-                {
-                    @Override
-                    public void onAction() 
-                    {
-                        weatherIndex--;
-                        createText(weathers[weatherIndex]);
-                    }
-                });
-        */
         createTerrainButton.setHUDButtonListener(new HUDButtonListener()
                 {
                     @Override
