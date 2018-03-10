@@ -37,8 +37,8 @@ public class Main extends SimpleApplication
     //private final static InputManager INPUT_MANAGER = new InputManager(null, null, null, null);
     //Make input manager here and make function getInputManager; OVERRIDE IT.
 
-    private  BaseAppState mapAppState, 
-            hudAppState;
+    private MapAppState mapAppState;
+    private HUDAppState hudAppState;
     
     
     private BulletAppState BULLET_APP_STATE = new BulletAppState();
@@ -86,11 +86,14 @@ public class Main extends SimpleApplication
         //initialize it.
         hudAppState = new HUDAppState();
         mapAppState = new MapAppState();
+        //mapAppState.getMain().getChildren();
+        //mapAppState.getMain().getRootNode().detachChild(mapAppState.getRain());
         //Init Global Variables / Data
         initJME3GlobalGUI();
         
         //Init GUI App State
         stateManager.attach(hudAppState);
+        
     }
     
     /**
@@ -106,7 +109,9 @@ public class Main extends SimpleApplication
         //Init Game Variables / Data
         generateProceduralMap();
         
-        placeTrees(HUDAppState.treeNum);
+        placeTrees(HUDAppState.getTreeNum());
+        //Very interesting; it seems that the getRootNode fails. We must see how it works in the MapAppState and how it fails to work here.
+        
         initCamera();
     }
     
