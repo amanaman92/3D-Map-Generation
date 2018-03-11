@@ -238,11 +238,11 @@ public class HUDAppState extends BaseAppState{
                     {
                         if(weatherIndex == 0){
                             weatherIndex = weathers.length - 1;
-                            String s = "Weather: " + weathers[weatherIndex];                            
+                            String s = "" + weathers[weatherIndex];                            
                             weatherText.setText(s);
                         } else{
                             weatherIndex--;
-                            String s = "Weather: " + weathers[weatherIndex];
+                            String s = "" + weathers[weatherIndex];
                             weatherText.setText(s);
                         }
                     }
@@ -354,31 +354,7 @@ public class HUDAppState extends BaseAppState{
          **  picture; it appears to be okay. Factor is that for every 2x of ratio,
          **  you must decrease the posX by screenSize.width /8 more and decrease by screenSize.height / 4 more.
 
-        Picture guiPict = new Picture("guiBackground");
-        guiPict.setImage(a, "GUIComponent/guiBG.png", true);
-        
-        
-        int imageCenterPosX = screenSize.width/4;
-        int imageCenterPosY = screenSize.height/2 - screenSize.height / 2;
-        guiPict.setWidth(screenSize.width/2);
-        guiPict.setHeight(screenSize.height/1);
-        
-        int imageCenterPosX = screenSize.width/4;
-        int imageCenterPosY = screenSize.height/2 - screenSize.height / 2;
-        guiPict.setWidth(screenSize.width/2);
-        guiPict.setHeight(screenSize.height/1);
-        guiPict.setPosition(imageCenterPosX, imageCenterPosY);
-        guiNode.attachChild(guiPict);
-        */
-        
-        /*
-        int imageCenterPosX = screenSize.width/4 + screenSize.width / 8;
-        int imageCenterPosY = screenSize.height/2 - screenSize.height / 4;
-        guiPict.setWidth(screenSize.width/4);
-        guiPict.setHeight(screenSize.height/2);
-        */
-        //guiPict.setPosition(screenSize.width/4, imageCenterPosY);
-        
+       */
         
     }
                 
