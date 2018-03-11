@@ -14,6 +14,7 @@ import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
+import java.util.ArrayList;
 
 
 /**
@@ -29,12 +30,25 @@ public class MapAppState extends BaseAppState
     private ViewPort viewPort;
     private final DirectionalLight DIRECTIONAL_LIGHT = new DirectionalLight();
     
-    
+    // variables for rain particles
     private ParticleEmitter rain;
     private float rainGravity = 500f;
     private float rainEmitterRadius = 1000f;
     private float rainEmitterHeight = 50f;
     private int rainParticlesPerSec = 10000;
+    
+    // variables for snow particles
+    private ParticleEmitter snow;
+    private float snowGravity = 20f;
+    private float snowEmitterRadius = 1000f;
+    private float snowEmitterHeight = 50f;
+    private int snowParticlesPerSec = 10000;
+    
+    // variables for fires
+    private ArrayList<ParticleEmitter> fires = new ArrayList<>();
+    
+    
+
      
     /**
      * This function does basic initialiation of the AppState.
@@ -53,13 +67,22 @@ public class MapAppState extends BaseAppState
         initSky();
         initLight();
         initRain();
+        initSnow();
+        initTreeFires();
         HUDAppState h = new HUDAppState();
         switch(HUDAppState.getWeatherIndex()){
             case 0: break;
                 
             case 1: main.getRootNode().attachChild(rain);
                     break;
-    
+            
+            case 2: main.getRootNode().attachChild(snow);
+                    break;
+                    
+            case 3: for (ParticleEmitter fire: fires) {
+                        main.getRootNode().attachChild(fire); 
+                    }
+                    break;
         }
         /** Previous way of getting the weather string that was inputted, which led to null pointer exception due to 
          * HUDAppState not being made. Will attempt to do thru main.
@@ -109,7 +132,7 @@ public class MapAppState extends BaseAppState
      */
     @Override
     public void update(float tpf){
-        rain.setLocalTranslation(main.getCamera().getLocation());
+        snow.setLocalTranslation(main.getCamera().getLocation());
     }
     
     /**
@@ -145,6 +168,41 @@ public class MapAppState extends BaseAppState
     
     
     /*
+     * This method creates snow particles in a sphere centered on the camera.
+     *
+     * inspired by https://jmonkeyengine.github.io/wiki/jme3/beginner/hello_effects.html
+    */
+    private void initSnow()  
+    {
+    snow = new ParticleEmitter(
+            "snow", ParticleMesh.Type.Triangle, snowParticlesPerSec);
+    snow.setShape(new EmitterSphereShape(Vector3f.ZERO, snowEmitterRadius));
+    Material material = new Material(main.getAssetManager(),
+            "Common/MatDefs/Misc/Particle.j3md"); // Emitter emits Particle objects
+    material.setTexture("Texture", main.getAssetManager().loadTexture(
+            "Effects/snowdrop.png")); // The image is Texture type, white blot
+    snow.setMaterial(material);  
+    snow.setLocalTranslation(main.getCamera().getLocation()); //initial snow pos
+    snow.getParticleInfluencer().setInitialVelocity
+        (new Vector3f(0.0f, -1.1f, 0.0f));
+    snow.setGravity(0, snowGravity, 0);
+    snow.setLowLife(2); // Each particle lasts atleast 2 
+    snow.setHighLife(5); // Each particles lasts at most 5
+    snow.setImagesX(1); // Set x proportion of texture
+    snow.setImagesY(1); // Set y proportion of texture
+    snow.setStartSize(1f); // Particle created with size 1
+    snow.setEndSize(0f); // Particle shrinks to 0
+    snow.setStartColor(new ColorRGBA(1.0f, 1.0f, 1.0f, 1f)); // Start white
+    snow.setEndColor(new ColorRGBA(1f, 1f, 1.0f, 1f)); // End white
+    snow.setParticlesPerSec(snowParticlesPerSec); // How many particles per sec 
+    snow.getParticleInfluencer().setVelocityVariation(1.1f);
+    //main.getRootNode().attachChild(snow); 
+    //Leave the attachChild part to me please. Once you finish, push it and let me 
+    //me know so that I can get to integrating the code.
+    }
+    
+    
+    /*
      * This method creates rain particles in a sphere centered on the camera.
      *
      * inspired by https://jmonkeyengine.github.io/wiki/jme3/beginner/hello_effects.html
@@ -159,7 +217,7 @@ public class MapAppState extends BaseAppState
     material.setTexture("Texture", main.getAssetManager().loadTexture(
             "Effects/raindrop.png")); // The image is Texture type, white line
     rain.setMaterial(material);  
-    rain.setLocalTranslation(main.getCamera().getLocation());
+    rain.setLocalTranslation(main.getCamera().getLocation()); //initial rain pos
     rain.getParticleInfluencer().setInitialVelocity
         (new Vector3f(0.0f, -1.1f, 0.0f));
     rain.setGravity(0, rainGravity, 0);
@@ -172,10 +230,53 @@ public class MapAppState extends BaseAppState
     rain.setStartColor(new ColorRGBA(1.0f, 1.0f, 1.0f, 1f)); // Start white
     rain.setEndColor(new ColorRGBA(1f, 1f, 1.0f, 1f)); // End white
     rain.setParticlesPerSec(rainParticlesPerSec); // How many particles per sec  
-    //main.getRootNode().attachChild(rain); Leave the attachChild part to me please. Once you finish, push it and let me 
+    //main.getRootNode().attachChild(rain); 
+    //Leave the attachChild part to me please. Once you finish, push it and let me 
     //me know so that I can get to integrating the code.
     }
+        
+    /**
+     * This method is meant to be called during the map initialization.
+     * Iterates through the list of trees and makes a fire at each tree.
+     */
+    private void initTreeFires() {
+        for (Tree tree: main.getTREES()){
+            makeFire(tree.loc(), tree.getScale());
+        }       
+    }
+    
+    /**
+     * This method creates a fire particle effect
+     * inspired by https://jmonkeyengine.github.io/wiki/jme3/beginner/hello_effects.html
+     * @param vec specifies location of the fire, centered on a tree
+     * @param scale slides the fire up/down depending on the tree scale
+     */
+    private void makeFire(Vector3f vec, float scale) {
+    ParticleEmitter fire =
+            new ParticleEmitter("Emitter", ParticleMesh.Type.Triangle, 30);
+    Material mat_red = new Material(main.getAssetManager(),
+            "Common/MatDefs/Misc/Particle.j3md");
+    mat_red.setTexture("Texture", main.getAssetManager().loadTexture(
+            "Effects/flame.png"));
+    fire.setMaterial(mat_red);
+    fire.setImagesX(2);
+    fire.setImagesY(2);
+    fire.setEndColor(new ColorRGBA(1f, 0f, 0f, 1f));   
+    fire.setStartColor(new ColorRGBA(1f, 1f, 0f, 0.5f));
+    fire.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 20, 0));
+    fire.setLocalTranslation(vec.add(0f, scale* scale * 25, 0f));
+    fire.setStartSize(15f * scale);
+    fire.setEndSize(0f * scale);
+    fire.setGravity(0, 1, 0);
+    fire.setLowLife(1f);
+    fire.setHighLife(3f);
+    fire.getParticleInfluencer().setVelocityVariation(0.3f);
+    fires.add(fire);
+    }
+    
 
+    
+    
     
    
 }

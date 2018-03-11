@@ -304,5 +304,12 @@ public class Main extends SimpleApplication
     public int getMapSize(){
         return MAP_SIZE;
     }
+    
+    /** 
+     * @return reference to tree objects
+     */
+    public ArrayList<Tree> getTREES(){
+        return TREES;
+    }
 
 }
