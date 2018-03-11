@@ -24,12 +24,11 @@ public class HUDAppState extends BaseAppState{
     
     private static int treeNum = 0;
     private static int weatherIndex = 0;
-    private static String [] weathers = {"Clear", "Rain"};
+    private static String [] weathers = {"Sunny", "Rainy"};
     private final HUDInputManager HUD_INPUT_MANAGER = new HUDInputManager();
     private BitmapText treeNumText, weatherText, createTerrainText;
     private final int NUM_OF_ARROWS = 3; 
     private final int treeNumLimit = 200;
-    private int numOfTimesClicked = 0;
     //TODO: Test out to see if the launchGame does it job when GUI is added. 
     //I predict that if true, it will run both the text and gui. What about when false? Will it run?
     //Or will it be blank with the gui displayed? Will be changed by a method called launchGame.
@@ -160,20 +159,19 @@ public class HUDAppState extends BaseAppState{
         //TODO: Make a setter method for increasing the private treeNum Var by 1, as public method.
         
         HUD_INPUT_MANAGER.uncapMouse(); 
-        System.out.println("Before setListener part");
-        String trees = "Number of trees: " + treeNum;
-        System.out.println("Before instantiating treeNumText");
-        
+        String trees = "Input Number of trees: " + treeNum;        
         treeNumText = new BitmapText(guiFont, false);
         treeNumText = setTextSettings(treeNumText, trees, screenSize.width / 2, screenSize.height/2 + screenSize.height/16);
         guiNode.attachChild(treeNumText);
         
+        String weather = "Select Weather: " + weathers[weatherIndex];        
         weatherText = new BitmapText(guiFont, false);
-        weatherText = setTextSettings(weatherText, weathers[weatherIndex], screenSize.width / 2, screenSize.height/2 + screenSize.height/4 + screenSize.height/16);
+        weatherText = setTextSettings(weatherText, weather, screenSize.width / 2, screenSize.height/2 + screenSize.height/4 + screenSize.height/16);
         guiNode.attachChild(weatherText);
-        
+        int createTerrainTextX = screenSize.width/2 - screenSize.width/20;
+        int createTerrainTextY =  screenSize.height / 8 - screenSize.height / 64;
         createTerrainText = new BitmapText(guiFont, false);
-        createTerrainText = setTextSettings(createTerrainText, "Make Terrain!", screenSize.width/2 - screenSize.width/16, screenSize.height / 8);
+        createTerrainText = setTextSettings(createTerrainText, "Make Terrain!", createTerrainTextX, createTerrainTextY);
         guiNode.attachChild(createTerrainText);
         
         //Very funny; even with the size of the testText set to the entire screen's length, you cannot see the actual text anywhere on screen
@@ -189,11 +187,11 @@ public class HUDAppState extends BaseAppState{
                     {
                         if(treeNum == treeNumLimit){
                             treeNum = 0;
-                            String s = "Num of Trees: " + treeNum;
+                            String s = "Trees: " + treeNum;
                             treeNumText.setText(s);
                         } else{
-                            treeNum++;
-                            String s = "" + treeNum;
+                            treeNum += 5;
+                            String s = "Trees: " + treeNum;
                             treeNumText.setText(s);
                         }
                     }
@@ -206,11 +204,11 @@ public class HUDAppState extends BaseAppState{
                     {
                         if(treeNum == 0){
                             treeNum = treeNumLimit;                            
-                            String s = "" + treeNum;
+                            String s = "Trees: " + treeNum;
                             treeNumText.setText(s);              
                         } else {
-                            treeNum--;
-                            String s = "" + treeNum;                        
+                            treeNum -= 5;
+                            String s = "Trees: " + treeNum;                        
                             treeNumText.setText(s);
                         }
                     }
@@ -223,11 +221,11 @@ public class HUDAppState extends BaseAppState{
                     {
                         if(weatherIndex == weathers.length - 1){
                             weatherIndex = 0;
-                            String s = "Weather: " + weathers[weatherIndex];
+                            String s = "" + weathers[weatherIndex];
                             weatherText.setText(s);
                         } else{
                             weatherIndex++;
-                            String s = "Weather: " + weathers[weatherIndex];
+                            String s = "" + weathers[weatherIndex];
                             weatherText.setText(s);
                         }
                     }
@@ -265,11 +263,7 @@ public class HUDAppState extends BaseAppState{
                     
                     public void onAction() 
                     {
-                        System.out.println("You just clicked on the createTerrain Button");
                         launchGame = true;
-                        System.out.println("Shouldn't you launch game at this point?");
-                        numOfTimesClicked++;
-                        System.out.println(numOfTimesClicked);
                         //Bottom part deals with detaching all GUI components; good to know, it is indeed very possible to do this in one function.
                         guiNode.detachAllChildren();
                         HUD_INPUT_MANAGER.capMouse();
@@ -298,7 +292,7 @@ public class HUDAppState extends BaseAppState{
         int imageCenterPosX = screenSize.width/4;
         int imageCenterPosY = 0;
         guiPictBG.setWidth(screenSize.width/2);
-        guiPictBG.setHeight(screenSize.height/1);
+        guiPictBG.setHeight(screenSize.height);
         guiPictBG.setPosition(imageCenterPosX, imageCenterPosY);
         guiNode.attachChild(guiPictBG);
         
