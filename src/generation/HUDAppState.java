@@ -1,5 +1,6 @@
 package generation;
 
+import java.*;
 import java.awt.*;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
@@ -26,6 +27,8 @@ public class HUDAppState extends BaseAppState{
     private static String [] weathers = {"Clear", "Rain"};
     private final HUDInputManager HUD_INPUT_MANAGER = new HUDInputManager();
     private BitmapText treeNumText, weatherText, createTerrainText;
+    private final int NUM_OF_ARROWS = 3; 
+
     //TODO: Test out to see if the launchGame does it job when GUI is added. 
     //I predict that if true, it will run both the text and gui. What about when false? Will it run?
     //Or will it be blank with the gui displayed? Will be changed by a method called launchGame.
@@ -46,33 +49,17 @@ public class HUDAppState extends BaseAppState{
         createMainMenu();
     }
     
-    
-    /**
-     * Creates the main menu, where most or all UI elements should be placed
-     * 
-     * Will need to be able to create much of
-     */
-    
-    //Problem: You are creating the text but you are not setting it; instead, you are making it over and over again.
-    //Solution: Have the text be set to new value. Only obstacle is, 
-    /*
-    public void createText(String s, int size, int posX, int posY){
-        //Poor strategy down there; you passed by value, preventing global variable from being set.
-        BitmapText hpText = new BitmapText(guiFont, false);
-        hpText.setText(s);
-        hpText.setSize(guiFont.getCharSet().getRenderedSize());
-        hpText.setColor(ColorRGBA.Red);
-        hpText.setSize(size);
-        hpText.setLocalTranslation(posX, posY, 0);
-        guiNode.attachChild(hpText);
-    }
-    
-    public void setTreeText(String s){
-        
+    public BitmapText setTextSettings(BitmapText toMake, String s, int posX, int posY){
+        toMake.setText(s);
+        toMake.setSize(guiFont.getCharSet().getRenderedSize());
+        toMake.setColor(ColorRGBA.Red);
+        toMake.setSize(screenSize.width / 64);
+        toMake.setLocalTranslation(posX, posY, 1);
+        return toMake;
         
     }
     
-    */
+    
 
     public static String getWeather(){
         return weathers[weatherIndex];
@@ -93,27 +80,72 @@ public class HUDAppState extends BaseAppState{
         
         //2 button for tree count(up and down); two(up and down) for weather, one for creating the terrain itself.
         
-        //TODO: set each coords to be less hardcoded and more for the screen size.
+        /** New rectangle parameters are (in order) the x and y positions, then the width and height.
+         * 
+         * 
+         * 
+         * 
+         * private final int ARROW_DOWN_POS_Y = screenSize.height/4 + screenSize.height/8;
+           private final int ARROW_UP_POS_Y = screenSize.height/4;
+           private final int ARROW_ALL_POS_X = screenSize.width/4;
+           private final int ARROW_WIDTH = screenSize.width/32;
+           private final int ARROW_HEIGHT = screenSize.height / 16;  
+         */ 
+        int arrowAllPosX = screenSize.width/4;
+        int arrowWidth = screenSize.width/32;
+        int arrowHeight = screenSize.height / 16;
+        int arrowUpPosY = screenSize.height/4 + screenSize.height/8;
+        int arrowDownPosY = screenSize.height/4;
         
-        //createText("Sigh", screenSize.width / 4, screenSize.width / 2, screenSize.height / 2);
-        Rectangle incTreeButtonBox = new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2);
-        Rectangle decTreeButtonBox = new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2);
-        Rectangle weatherUpButtonBox = new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2);
-        Rectangle weatherDownButtonBox = new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2);
-        Rectangle createTerrainButtonBox = new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2);
-
-        //Rectangle createTerrainBox = new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2);
+        int buttonAllPosX = arrowAllPosX;
+        int buttonWidth = screenSize.width/32;
+        int buttonHeight = screenSize.height / 16;
+        int buttonUpPosY = screenSize.height - arrowUpPosY;
+        int buttonDownPosY = screenSize.height - arrowDownPosY;
+        
+        int numOfArrowButtons = 4;
+        int spacingPerOwnArrow = screenSize.height / 4;
+        /*
+        Rectangle incTreeButtonBox = new Rectangle(screenSize.width, screenSize.height, arrowWidth, arrowHeight);
+        Rectangle decTreeButtonBox = new Rectangle(screenSize.width, screenSize.height, arrowWidth, arrowHeight);
+        Rectangle weatherUpButtonBox = new Rectangle(screenSize.width, screenSize.height, arrowWidth, arrowHeight);
+        Rectangle weatherDownButtonBox = new Rectangle(screenSize.width, screenSize.height + (3*spacingPerOwnArrow), arrowWidth, arrowHeight);
+        
+        Rectangle incTreeButtonBox = new Rectangle(0,0, arrowWidth, arrowHeight);
+        Rectangle decTreeButtonBox = new Rectangle(0,0, arrowWidth, arrowHeight);
+        Rectangle weatherUpButtonBox = new Rectangle(0, 0, arrowWidth, arrowHeight);
+        Rectangle weatherDownButtonBox = new Rectangle(0,0 + (3*spacingPerOwnArrow), arrowWidth, arrowHeight);
+        /**
+         * Important note: THE RECTANGLE OBJECTS'S (0,0) IS ON TOP LEFT CORNER. 
+         * In addition, it is also shown that the rectangle is actually placed on its own top left corner. 
+         * Thus, when you test it with the code you have now(with this 1 - position thing), the button functions
+           at its gaps.
+        
+            I should shift them by screenSize/16 upwards to correct the problem.
+         */
+        
+        
+        /* N
+        
+        
+        */
+        Rectangle incTreeButtonBox = new Rectangle(arrowAllPosX, buttonUpPosY - (spacingPerOwnArrow), arrowWidth, arrowHeight);
+        Rectangle decTreeButtonBox = new Rectangle(arrowAllPosX, buttonDownPosY - spacingPerOwnArrow, arrowWidth, arrowHeight);
+        Rectangle weatherUpButtonBox = new Rectangle(arrowAllPosX, buttonUpPosY - (2*spacingPerOwnArrow), arrowWidth, arrowHeight);
+        Rectangle weatherDownButtonBox = new Rectangle(arrowAllPosX, buttonDownPosY - (2*spacingPerOwnArrow), arrowWidth, arrowHeight);
+        
+        //Rectangle createTerrainButtonBox = new Rectangle(screenSize.width / 4, screenSize.width / 4, screenSize.width/2, screenSize.height / 2);
         
         HUDButton incTree = new HUDButton(incTreeButtonBox);
-        HUDButton decTree = new HUDButton(incTreeButtonBox);
-        HUDButton weatherUp = new HUDButton(new Rectangle(40, 40, 20, 20));
-        HUDButton weatherDown = new HUDButton(new Rectangle(50, 50, 20, 20));
-        HUDButton createTerrainButton = new HUDButton(incTreeButtonBox);
+        HUDButton decTree = new HUDButton(decTreeButtonBox);
+        HUDButton weatherUp = new HUDButton(weatherUpButtonBox);
+        HUDButton weatherDown = new HUDButton(weatherDownButtonBox);
+        //HUDButton createTerrainButton = new HUDButton(incTreeButtonBox);
         HUD_INPUT_MANAGER.addButton(incTree);
         HUD_INPUT_MANAGER.addButton(decTree);
         HUD_INPUT_MANAGER.addButton(weatherUp);
         HUD_INPUT_MANAGER.addButton(weatherDown);
-        HUD_INPUT_MANAGER.addButton(createTerrainButton);
+        //HUD_INPUT_MANAGER.addButton(createTerrainButton);
         
         /* Very interesting... It turns out that if you eliminate the incTreeButton that had the button at what is
            supposed to be the same exact position as the createTerrainButton, it would actually work.
@@ -128,28 +160,24 @@ public class HUDAppState extends BaseAppState{
         
         HUD_INPUT_MANAGER.uncapMouse(); 
         System.out.println("Before setListener part");
-        String trees = "" + treeNum;
+        String trees = "Number of trees: " + treeNum;
         System.out.println("Before instantiating treeNumText");
         
-        //createText(trees, screenSize.width / 4, screenSize.width / 2, screenSize.height / 2);
-         
         treeNumText = new BitmapText(guiFont, false);
-        treeNumText.setText(trees);
-        treeNumText.setSize(guiFont.getCharSet().getRenderedSize());
-        treeNumText.setColor(ColorRGBA.Red);
-        treeNumText.setSize(screenSize.width / 64);
-        treeNumText.setLocalTranslation(screenSize.width / 2, screenSize.height / 4, 1);
+        treeNumText = setTextSettings(treeNumText, trees, 0, 0);
         guiNode.attachChild(treeNumText);
         
-       
+        treeNumText = new BitmapText(guiFont, false);
+        treeNumText = setTextSettings(treeNumText, trees, 60, 60);
+        guiNode.attachChild(treeNumText);
+
         weatherText = new BitmapText(guiFont, false);
-        weatherText.setText(trees);
+        weatherText.setText(weathers[0]);
         weatherText.setSize(guiFont.getCharSet().getRenderedSize());
         weatherText.setColor(ColorRGBA.Red);
         weatherText.setSize(screenSize.width / 64);
         weatherText.setLocalTranslation(screenSize.width / 2, screenSize.height / 2, 1);
         guiNode.attachChild(weatherText);
-        
         
         createTerrainText = new BitmapText(guiFont, false);
         createTerrainText.setText("Make Terrain!");
@@ -159,13 +187,14 @@ public class HUDAppState extends BaseAppState{
         createTerrainText.setLocalTranslation(screenSize.width / 2, screenSize.height / 4, 1);
         guiNode.attachChild(createTerrainText);
         
-        
+        //Very funny; even with the size of the testText set to the entire screen's length, you cannot see the actual text anywhere on screen
+        //Especially when setting it to the size.
         BitmapText testText = new BitmapText(guiFont, false);
-        testText.setText("Make Terrain!");
+        testText.setText("Hola! You should be seen somewhere!");
         testText.setSize(guiFont.getCharSet().getRenderedSize());
         testText.setColor(ColorRGBA.Red);
-        testText.setSize(screenSize.width / 64);
-        testText.setLocalTranslation(screenSize.width / 2, screenSize.height / 4, 1);
+        testText.setSize(screenSize.height);
+        testText.setLocalTranslation(screenSize.width, screenSize.height, 2);
         guiNode.attachChild(testText);
         
         //System.out.println("After instantiating treeNumText; there would be a problem if it is still null pointer at this point");
@@ -176,6 +205,7 @@ public class HUDAppState extends BaseAppState{
                     @Override
                     public void onAction() 
                     {
+                        
                         if(treeNum == 10){
                             treeNum = 0;
                             System.out.println("Printing treeNum after this statement");
@@ -185,13 +215,13 @@ public class HUDAppState extends BaseAppState{
                             treeNumText.setText(s);
                             System.out.println("Inc tree");
                         } else{
-                        incTree();
-                        System.out.println("Printing treeNum after this statement");
-                        String s = "" + treeNum;
-                        System.out.println("setting treeNumText to new treeNum after this");
-                        //Problem located right below you.
-                        treeNumText.setText(s);
-                        System.out.println("Inc tree");
+                            incTree();
+                            System.out.println("Printing treeNum after this statement");
+                            String s = "" + treeNum;
+                            System.out.println("setting treeNumText to new treeNum after this");
+                            //Problem located right below you.
+                            treeNumText.setText(s);
+                            System.out.println("Inc tree");
                         }
                         
                     }
@@ -221,13 +251,22 @@ public class HUDAppState extends BaseAppState{
                     @Override
                     public void onAction() 
                     {
-
-                        weatherIndex++;
-                        System.out.println("weatherIndex++ done");
-                        String s = weathers[weatherIndex];
-                        System.out.println("String is 's' now weather");
-                        weatherText.setText(s);
-                        System.out.println("inc weatherIndex");
+                        if(weatherIndex == weathers.length - 1){
+                            weatherIndex = 0;
+                            System.out.println("weatherIndex++ done");
+                            String s = "Weather: " + weathers[weatherIndex];
+                            System.out.println("String is 's' now weather");
+                            weatherText.setText(s);
+                            System.out.println("inc weatherIndex");
+                        } else{
+                            weatherIndex++;
+                            System.out.println("weatherIndex++ done");
+                            String s = "Weather: " + weathers[weatherIndex];
+                            System.out.println("String is 's' now weather");
+                            weatherText.setText(s);
+                            System.out.println("inc weatherIndex");
+                        }
+                        
                     }
                 });
         
@@ -236,16 +275,23 @@ public class HUDAppState extends BaseAppState{
                     @Override
                     public void onAction() 
                     {
-                        weatherIndex--;
-                        System.out.println("weatherIndex-- done");
-                        String s = weathers[weatherIndex];
-                        System.out.println("String is 's' now weather");
-                        weatherText.setText(s);
-                        System.out.println("dec weatherIndex");
+                        if(weatherIndex == 0){
+                            System.out.println("weatherIndex-- done; weather Index is now at last index.");
+                            weatherIndex = weathers.length - 1;
+                            System.out.println("weatherIndex-- done; weather Index is now at last index.");
+                            String s = "Weather: " + weathers[weatherIndex];                            
+                            weatherText.setText(s);
+                        } else{
+                            System.out.println("weatherIndex-- done");
+                            weatherIndex--;
+                            String s = "Weather: " + weathers[weatherIndex];
+                            weatherText.setText(s);
+                        }
+                        
 
                     }
                 });
-        
+        /*
         createTerrainButton.setHUDButtonListener(new HUDButtonListener()
                 {
                     @Override
@@ -257,7 +303,9 @@ public class HUDAppState extends BaseAppState{
                     SOLVED: Problem was the fact that the button existed and has same size, which was in turn not
                         added in input manager as needed.
                     
-                    */
+                    Actually, not really. Something must be up.
+                    
+                    
                     public void onAction() 
                     {
                         System.out.println("You just clicked on the createTerrain Button");
@@ -281,24 +329,64 @@ public class HUDAppState extends BaseAppState{
         /** Actual area of the pictures that we need to deal with.
          * 
          */
+        
+        /** GUI BG component.
+         * 
+         */
         AssetManager a = main.getAssetManager();
         Picture guiPictBG = new Picture("PNG GUI Background Box");
         guiPictBG.setImage(a, "GUIComponent/PNG GUI Background Box.png", true);
-        Picture guiPictArrow = new Picture("GUIArrowComponent");
         int imageCenterPosX = screenSize.width/4;
-        int imageCenterPosY = screenSize.height/2 - screenSize.height / 2;
-        guiPictBG.setWidth(screenSize.width/2);
-        guiPictBG.setHeight(screenSize.height/1);
-        
+        int imageCenterPosY = 0;
         guiPictBG.setWidth(screenSize.width/2);
         guiPictBG.setHeight(screenSize.height/1);
         guiPictBG.setPosition(imageCenterPosX, imageCenterPosY);
         guiNode.attachChild(guiPictBG);
         
+        /** GUI BG component for arrow up.
+         * 
+         */
         
+        for(int i = 0; i < NUM_OF_ARROWS; i++){
+            Picture guiArrowUp = new Picture("ArrowUpGUIComponent");
+            
+            guiArrowUp.setImage(a, "GUIComponent/ArrowUpGUIComponent.png", true);
+            
+            int arrowUpCenterPosX = screenSize.width/4;
+            
+            int arrowUpCenterPosY = screenSize.height/4 + screenSize.height/8;
+            
+            guiArrowUp.setWidth(screenSize.width/32);
+            
+            guiArrowUp.setHeight(screenSize.height/16);
+            
+            guiArrowUp.setPosition(arrowUpCenterPosX, arrowUpCenterPosY + (i * spacingPerOwnArrow));
+            
+            guiNode.attachChild(guiArrowUp);
+        }
         
-        
-        
+        /** GUI BG component for arrow down.
+         * 
+         */
+        for(int i = 0; i < NUM_OF_ARROWS; i++){
+            
+            Picture guiArrowDown = new Picture("ArrowDownGUIComponent");
+
+            guiArrowDown.setImage(a, "GUIComponent/ArrowDownGUIComponent.png", true);
+            
+            int arrowDownCenterPosX = screenSize.width/4;
+            
+            int arrowDownCenterPosY = screenSize.height/4;
+            
+            guiArrowDown.setWidth(screenSize.width/32);
+            
+            guiArrowDown.setHeight(screenSize.height/16);
+            
+            guiArrowDown.setPosition(arrowDownCenterPosX, arrowDownCenterPosY + (i * spacingPerOwnArrow));
+            
+            guiNode.attachChild(guiArrowDown);
+        }
+
         
         
         

@@ -54,12 +54,12 @@ public class MapAppState extends BaseAppState
         initLight();
         initRain();
         HUDAppState h = new HUDAppState();
-        if(HUDAppState.getWeatherIndex() == 0){
-            main.getRootNode().detachChild(rain);
-        } else if(HUDAppState.getWeatherIndex() == 1){
-            
-        } else if(HUDAppState.getWeatherIndex() == 2){
-            
+        switch(HUDAppState.getWeatherIndex()){
+            case 0: main.getRootNode().detachChild(rain);
+                    break;
+            case 1: 
+                   
+                
         }
         /** Previous way of getting the weather string that was inputted, which led to null pointer exception due to 
          * HUDAppState not being made. Will attempt to do thru main.
@@ -136,13 +136,7 @@ public class MapAppState extends BaseAppState
         main.getRootNode().attachChild(SkyFactory.createSky(main.getAssetManager(), 
                 "Textures/Skysphere.jpg", SkyFactory.EnvMapType.SphereMap));
     }
- 
-    public Main getMain(){
-        return main;
-    }
-    public ParticleEmitter getRain(){
-        return rain;
-    }
+
 
     
     //Idea: Use the main from MapAppState to be able to try and detach the child of rain on Main.java
