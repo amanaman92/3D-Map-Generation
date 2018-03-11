@@ -300,6 +300,10 @@ public class Main extends SimpleApplication
     {
         return DEBUG;
     }
+    
+    public int getMapSize(){
+        return MAP_SIZE;
+    }
     /**
      * @return the SimpleApplication's default inputManager object
      

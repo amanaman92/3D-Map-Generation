@@ -55,9 +55,10 @@ public class MapAppState extends BaseAppState
         initRain();
         HUDAppState h = new HUDAppState();
         switch(HUDAppState.getWeatherIndex()){
-            case 0: main.getRootNode().detachChild(rain);
+            case 0: break;
+                
+            case 1: main.getRootNode().attachChild(rain);
                     break;
-            case 1: 
                    
                 
         }
@@ -172,7 +173,7 @@ public class MapAppState extends BaseAppState
     rain.setStartColor(new ColorRGBA(1.0f, 1.0f, 1.0f, 1f)); // Start white
     rain.setEndColor(new ColorRGBA(1f, 1f, 1.0f, 1f)); // End white
     rain.setParticlesPerSec(rainParticlesPerSec); // How many particles per sec  
-    main.getRootNode().attachChild(rain);
+    //main.getRootNode().attachChild(rain);
     }
 
     
