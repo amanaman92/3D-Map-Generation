@@ -59,8 +59,7 @@ public class MapAppState extends BaseAppState
                 
             case 1: main.getRootNode().attachChild(rain);
                     break;
-                   
-                
+    
         }
         /** Previous way of getting the weather string that was inputted, which led to null pointer exception due to 
          * HUDAppState not being made. Will attempt to do thru main.
@@ -173,7 +172,8 @@ public class MapAppState extends BaseAppState
     rain.setStartColor(new ColorRGBA(1.0f, 1.0f, 1.0f, 1f)); // Start white
     rain.setEndColor(new ColorRGBA(1f, 1f, 1.0f, 1f)); // End white
     rain.setParticlesPerSec(rainParticlesPerSec); // How many particles per sec  
-    //main.getRootNode().attachChild(rain);
+    //main.getRootNode().attachChild(rain); Leave the attachChild part to me please. Once you finish, push it and let me 
+    //me know so that I can get to integrating the code.
     }
 
     

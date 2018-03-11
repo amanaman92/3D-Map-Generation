@@ -59,38 +59,9 @@ public class HUDAppState extends BaseAppState{
         
     }
     
-    
-
-    public static String getWeather(){
-        return weathers[weatherIndex];
-    }
-    /*
-    public void printTest(){
-            System.out.println("Hi! Can you see me? If you can, that means that you are able to go inside the .setHUDButton Listener class!");
-    }
-    */
-
     private void createMainMenu()
     {
-        /** Will need to specifically create buttons to name in order to avoid confusion.
-         * 
-         *
-         *
-         */
         
-        //2 button for tree count(up and down); two(up and down) for weather, one for creating the terrain itself.
-        
-        /** New rectangle parameters are (in order) the x and y positions, then the width and height.
-         * 
-         * 
-         * 
-         * 
-         * private final int ARROW_DOWN_POS_Y = screenSize.height/4 + screenSize.height/8;
-           private final int ARROW_UP_POS_Y = screenSize.height/4;
-           private final int ARROW_ALL_POS_X = screenSize.width/4;
-           private final int ARROW_WIDTH = screenSize.width/32;
-           private final int ARROW_HEIGHT = screenSize.height / 16;  
-         */ 
         int arrowAllPosX = screenSize.width/4;
         int arrowWidth = screenSize.width/32;
         int arrowHeight = screenSize.height / 16;
@@ -102,25 +73,15 @@ public class HUDAppState extends BaseAppState{
         int buttonHeight = screenSize.height / 16;
         int buttonUpPosY = screenSize.height - arrowUpPosY;
         int buttonDownPosY = screenSize.height - arrowDownPosY;
-        
-        int numOfArrowButtons = 4;
         int spacingPerOwnArrow = screenSize.height / 4;
-        /*
-        Rectangle incTreeButtonBox = new Rectangle(screenSize.width, screenSize.height, arrowWidth, arrowHeight);
-        Rectangle decTreeButtonBox = new Rectangle(screenSize.width, screenSize.height, arrowWidth, arrowHeight);
-        Rectangle weatherUpButtonBox = new Rectangle(screenSize.width, screenSize.height, arrowWidth, arrowHeight);
-        Rectangle weatherDownButtonBox = new Rectangle(screenSize.width, screenSize.height + (3*spacingPerOwnArrow), arrowWidth, arrowHeight);
         
-        Rectangle incTreeButtonBox = new Rectangle(0,0, arrowWidth, arrowHeight);
-        Rectangle decTreeButtonBox = new Rectangle(0,0, arrowWidth, arrowHeight);
-        Rectangle weatherUpButtonBox = new Rectangle(0, 0, arrowWidth, arrowHeight);
-        Rectangle weatherDownButtonBox = new Rectangle(0,0 + (3*spacingPerOwnArrow), arrowWidth, arrowHeight);
         /**
          * Important note: THE RECTANGLE OBJECTS'S (0,0) IS ON TOP LEFT CORNER. 
          * In addition, it is also shown that the rectangle is actually placed on its own top left corner. 
-         * Thus, when you test it with the code you have now(with this 1 - position thing), the button functions
-           at its gaps.
-        
+         * Thus, when you test it with the code you have now(with this 1 - position thing), the button is effectively 
+           at the same position as the other GUI. However, because its Top Left corner is placed there, it will expand
+           downwards and to the right, creating the illusion that is goes southeast based on size being changed.
+         * Also, to note, because rectangles start from the top left of the screen itself, increasing the 
             I should shift them by screenSize/16 upwards to correct the problem.
          */
         
@@ -247,6 +208,7 @@ public class HUDAppState extends BaseAppState{
                         }
                     }
                 });
+        
         createTerrainButton.setHUDButtonListener(new HUDButtonListener()
                 {
                     @Override
@@ -260,7 +222,6 @@ public class HUDAppState extends BaseAppState{
                     
                     Actually, not really. Something must be up.
                     */
-                    
                     public void onAction() 
                     {
                         launchGame = true;
@@ -277,43 +238,29 @@ public class HUDAppState extends BaseAppState{
            It is like telling a sensor to start working when you haven't even turned a sensor on yet, right?
         
         */
-        
-        
-        /** Actual area of the pictures that we need to deal with.
-         * 
-         */
-        
+
         /** GUI BG component.
          * 
          */
         AssetManager a = main.getAssetManager();
-        Picture guiPictBG = new Picture("PNG GUI Background Box");
-        guiPictBG.setImage(a, "GUIComponent/PNG GUI Background Box.png", true);
+        
+
         int imageCenterPosX = screenSize.width/4;
         int imageCenterPosY = 0;
-        guiPictBG.setWidth(screenSize.width/2);
-        guiPictBG.setHeight(screenSize.height);
-        guiPictBG.setPosition(imageCenterPosX, imageCenterPosY);
+        Picture guiPictBG = setUpPicture(a, "PNG GUI Background Box", "GUIComponent/PNG GUI Background Box.png",
+                screenSize.width/2, screenSize.height, imageCenterPosX, imageCenterPosY);
         guiNode.attachChild(guiPictBG);
-        
+
         /** GUI BG component for arrow up.
          * 
          */
-        
         for(int i = 1; i < NUM_OF_ARROWS; i++){
-            Picture guiArrowUp = new Picture("ArrowUpGUIComponent");
-            
-            guiArrowUp.setImage(a, "GUIComponent/ArrowUpGUIComponent.png", true);
-            
-            int arrowUpCenterPosX = screenSize.width/4;
-            
+            Picture guiArrowUp;
             int arrowUpCenterPosY = screenSize.height/4 + screenSize.height/8  - screenSize.height / 16;
-            
-            guiArrowUp.setWidth(screenSize.width/32);
-            
-            guiArrowUp.setHeight(screenSize.height/16);
-            
-            guiArrowUp.setPosition(arrowUpCenterPosX, arrowUpCenterPosY + (i * spacingPerOwnArrow));
+
+            guiArrowUp = setUpPicture(a, "ArrowUpGUIComponent", "GUIComponent/ArrowUpGUIComponent.png", 
+                    buttonWidth, buttonHeight, arrowAllPosX, arrowUpCenterPosY + (i * 
+                            spacingPerOwnArrow));
             
             guiNode.attachChild(guiArrowUp);
         }
@@ -322,42 +269,24 @@ public class HUDAppState extends BaseAppState{
          * 
          */
         for(int i = 1; i < NUM_OF_ARROWS; i++){
-            
             Picture guiArrowDown = new Picture("ArrowDownGUIComponent");
-
-            guiArrowDown.setImage(a, "GUIComponent/ArrowDownGUIComponent.png", true);
-            
-            int arrowDownCenterPosX = screenSize.width/4;
-            
             int arrowDownCenterPosY = screenSize.height/4 - screenSize.height / 16;
-            
-            guiArrowDown.setWidth(screenSize.width/32);
-            
-            guiArrowDown.setHeight(screenSize.height/16);
-            
-            guiArrowDown.setPosition(arrowDownCenterPosX, arrowDownCenterPosY + (i * spacingPerOwnArrow));
-            
+            guiArrowDown = setUpPicture(a, "ArrowDownGUIComponent", "GUIComponent/ArrowDownGUIComponent.png", 
+                    buttonWidth, buttonHeight, arrowAllPosX, arrowDownCenterPosY + (i * 
+                            spacingPerOwnArrow));
             guiNode.attachChild(guiArrowDown);
         }
-
-        Picture makeTerrainButton = new Picture("MakeTerrainButton");
-        makeTerrainButton.setImage(a, "GUIComponent/MakeTerrainButton.PNG", true);
+        Picture makeTerrainButton;
         int imageButtonCenterPosX = screenSize.width/2 - screenSize.width/16;
         int imageButtonCenterPosY = screenSize.height / 8 - screenSize.height / 16;
-        makeTerrainButton.setWidth(screenSize.width/ 8);
-        makeTerrainButton.setHeight(screenSize.height / 16);
-        makeTerrainButton.setPosition(imageButtonCenterPosX, imageButtonCenterPosY);
+        makeTerrainButton = setUpPicture(a, "makeTerrainButton", "GUIComponent/MakeTerrainButton.PNG", screenSize.width/ 8,
+                screenSize.height / 16, imageButtonCenterPosX, imageButtonCenterPosY);
         guiNode.attachChild(makeTerrainButton);
-        
-        
         /**  Larger version of both the arrow and screen components clumped together in one
-         **  picture; it appears to be okay. Factor is that for every 2x of ratio,
-         **  you must decrease the posX by screenSize.width /8 more and decrease by screenSize.height / 4 more.
-
-       */
-        
+         *  picture; it appears to be okay. Factor is that for every 2x of ratio,
+         *  you must decrease the posX by screenSize.width /8 more and decrease by screenSize.height / 4 more.
+         */ 
     }
-                
     public static void launchGame(){
         launchGame = true;   
     }
@@ -367,7 +296,16 @@ public class HUDAppState extends BaseAppState{
     public static int getWeatherIndex(){
         return weatherIndex;
     }
-
+    public Picture setUpPicture(AssetManager a, String name, String directory, int picWidth, int picHeight, int picPosX, 
+            int picPosY){
+        
+        Picture p = new Picture(name);
+        p.setImage(a, directory, true);
+        p.setWidth(picWidth);
+        p.setHeight(picHeight);
+        p.setPosition(picPosX, picPosY);
+        return p;
+    }
     /**
      * This cleans up the AppState for removal. Not called
      *      directly from user code.

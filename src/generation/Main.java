@@ -110,7 +110,7 @@ public class Main extends SimpleApplication
         generateProceduralMap();
         
         placeTrees(HUDAppState.getTreeNum());
-        //Very interesting; it seems that the getRootNode fails. We must see how it works in the MapAppState and how it fails to work here.
+        //Very interesting; it seems that the getRootNode fails when called from main55. We must see how it works in the MapAppState and how it fails to work here.
         
         initCamera();
     }
@@ -304,23 +304,5 @@ public class Main extends SimpleApplication
     public int getMapSize(){
         return MAP_SIZE;
     }
-    /**
-     * @return the SimpleApplication's default inputManager object
-     
-    @Override
-    public InputManager getInputManager()
-    {
-        //System.out.println("Hello!");
-        return this.inputManager;
-    }
-    * 
-    * 
-    */ 
-    
+
 }
-
-    
-    
-    
-
-    //Lines 269 - 271 is what I wrote
