@@ -24,7 +24,7 @@ public class HUDAppState extends BaseAppState{
     
     private static int treeNum = 0;
     private static int weatherIndex = 0;
-    private static String [] weathers = {"Sunny", "Rainy"};
+    private static String [] weathers = {"Sunny", "Rainy", "Snowy", "Firey"};
     private final HUDInputManager HUD_INPUT_MANAGER = new HUDInputManager();
     private BitmapText treeNumText, weatherText, createTerrainText;
     private final int NUM_OF_ARROWS = 3; 
