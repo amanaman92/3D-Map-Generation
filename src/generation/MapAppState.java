@@ -14,9 +14,11 @@ import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
+
 import com.jme3.audio.AudioNode;
 import java.util.ArrayList;
 import java.util.Random;
+
 
 
 /**
@@ -39,7 +41,8 @@ public class MapAppState extends BaseAppState
     private float rainEmitterHeight = 50f;
     private int rainParticlesPerSec = 10000;
     
-     // variables for snow particles
+
+    // variables for snow particles
     private ParticleEmitter snow;
     private float snowGravity = 20f;
     private float snowEmitterRadius = 1000f;
@@ -49,6 +52,7 @@ public class MapAppState extends BaseAppState
     // variables for fires
     private ArrayList<ParticleEmitter> fires = new ArrayList<>();
     
+
     // audio variables
     private AudioNode rainAudio;
     private AudioNode fireAudio;
@@ -78,6 +82,7 @@ public class MapAppState extends BaseAppState
         initRain();
         initSnow();
         initTreeFires();
+
         initRainAudio();
         initFireAudio();
         initThunderAudio();
@@ -118,16 +123,16 @@ public class MapAppState extends BaseAppState
                         birdRainAudio.play();
                     }
                     break;
-            
+           
             case 2: main.getRootNode().attachChild(snow);
                     break;
                     
             case 3: for (ParticleEmitter fire: fires) {
+
                         fireAudio.play();
                         main.getRootNode().attachChild(fire); 
                     }
                     break;
-            
         }
         /** Previous way of getting the weather string that was inputted, which led to null pointer exception due to 
          * HUDAppState not being made. Will attempt to do thru main.
@@ -137,7 +142,9 @@ public class MapAppState extends BaseAppState
          hudAppState = new HUDAppState();
          System.out.println("hudAppState initialized to HUDAppState program");
          if(hudAppState.getWeather().equals("Rain")){
+
             initRain();
+
         } else if(HUDAppState.getWeather().equals("Snow")){
             
         } 
@@ -174,7 +181,7 @@ public class MapAppState extends BaseAppState
      */
     @Override
     public void update(float tpf){
-        rain.setLocalTranslation(main.getCamera().getLocation());
+        snow.setLocalTranslation(main.getCamera().getLocation());
     }
     
     /**
@@ -208,6 +215,7 @@ public class MapAppState extends BaseAppState
     //Which is where the hudAppState is located at. When that is done, you'd be able to control rain.
     //I'd need a method to be able to do so by returning main, then doing the getRootNode and detachChild via main.
     
+
      /*
      * This method creates snow particles in a sphere centered on the camera.
      *
@@ -258,7 +266,7 @@ public class MapAppState extends BaseAppState
     material.setTexture("Texture", main.getAssetManager().loadTexture(
             "Effects/raindrop.png")); // The image is Texture type, white line
     rain.setMaterial(material);  
-    rain.setLocalTranslation(main.getCamera().getLocation());
+    rain.setLocalTranslation(main.getCamera().getLocation()); //initial rain pos
     rain.getParticleInfluencer().setInitialVelocity
         (new Vector3f(0.0f, -1.1f, 0.0f));
     rain.setGravity(0, rainGravity, 0);
@@ -271,9 +279,51 @@ public class MapAppState extends BaseAppState
     rain.setStartColor(new ColorRGBA(1.0f, 1.0f, 1.0f, 1f)); // Start white
     rain.setEndColor(new ColorRGBA(1f, 1f, 1.0f, 1f)); // End white
     rain.setParticlesPerSec(rainParticlesPerSec); // How many particles per sec  
-    //main.getRootNode().attachChild(rain); Leave the attachChild part to me please. Once you finish, push it and let me 
+
+    //main.getRootNode().attachChild(rain); 
+    //Leave the attachChild part to me please. Once you finish, push it and let me 
     //me know so that I can get to integrating the code.
     }
+        
+    /**
+     * This method is meant to be called during the map initialization.
+     * Iterates through the list of trees and makes a fire at each tree.
+     */
+    private void initTreeFires() {
+        for (Tree tree: main.getTREES()){
+            makeFire(tree.loc(), tree.getScale());
+        }       
+    }
+    
+    /**
+     * This method creates a fire particle effect
+     * inspired by https://jmonkeyengine.github.io/wiki/jme3/beginner/hello_effects.html
+     * @param vec specifies location of the fire, centered on a tree
+     * @param scale slides the fire up/down depending on the tree scale
+     */
+    private void makeFire(Vector3f vec, float scale) {
+    ParticleEmitter fire =
+            new ParticleEmitter("Emitter", ParticleMesh.Type.Triangle, 30);
+    Material mat_red = new Material(main.getAssetManager(),
+            "Common/MatDefs/Misc/Particle.j3md");
+    mat_red.setTexture("Texture", main.getAssetManager().loadTexture(
+            "Effects/flame.png"));
+    fire.setMaterial(mat_red);
+    fire.setImagesX(2);
+    fire.setImagesY(2);
+    fire.setEndColor(new ColorRGBA(1f, 0f, 0f, 1f));   
+    fire.setStartColor(new ColorRGBA(1f, 1f, 0f, 0.5f));
+    fire.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 20, 0));
+    fire.setLocalTranslation(vec.add(0f, scale* scale * 25, 0f));
+    fire.setStartSize(15f * scale);
+    fire.setEndSize(0f * scale);
+    fire.setGravity(0, 1, 0);
+    fire.setLowLife(1f);
+    fire.setHighLife(3f);
+    fire.getParticleInfluencer().setVelocityVariation(0.3f);
+    fires.add(fire);
+    }
+    
 
     /**
      * This method is meant to be called during the map initialization.
@@ -285,6 +335,7 @@ public class MapAppState extends BaseAppState
         }       
     }
     
+
     /**
      * This method creates a fire particle effect
      * inspired by https://jmonkeyengine.github.io/wiki/jme3/beginner/hello_effects.html
@@ -374,6 +425,7 @@ public class MapAppState extends BaseAppState
        thunderAudio.setVolume(2); //Sets the volume of the noise
        main.getRootNode().attachChild(thunderAudio);
    }
+
    
    /**
     * This method creates and sets up the different parts of the audio
