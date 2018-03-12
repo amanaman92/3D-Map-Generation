@@ -379,7 +379,7 @@ public class MapAppState extends BaseAppState
     * for a birds in the rain noise so it can be another sound option for the rain
     */
    private void initBirdRainAudio(){
-       birdRainAudio = new AudioNode(main.getAssetManager(), "Sounds/BirdRain.mp3", false);
+       birdRainAudio = new AudioNode(main.getAssetManager(), "Sounds/Bird.wav", false);
        birdRainAudio.setPositional(false); //The noise is not positional
        birdRainAudio.setLooping(true); //The noise loops as it is played
        birdRainAudio.setVolume(2); //Sets the volume of the noise
