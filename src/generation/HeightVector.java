@@ -8,6 +8,7 @@ package generation;
 public class HeightVector extends MapVector
 {
     private float height;
+    private short requests, requestedHeightSum;
 
     /**
      * @param x The x-Coordinate of this HeightVector
@@ -19,6 +20,7 @@ public class HeightVector extends MapVector
     {
         super(x, y);
         this.height = height;
+        setHeightRequest(height);
     }
     
     /**
@@ -37,11 +39,33 @@ public class HeightVector extends MapVector
     
     
     /**
-     * @param height The new color value of this vector
+     * @param height The new height value of this vector
      */
     public void setHeight(float height)
     {
         this.height = height;
+    }
+    
+    /**
+     * Collects all requested heights and into one sum. This sum will be
+     *      used to compute the average of all heights requested and return
+     *      the final height decision at the end.
+     * @param height The requested height value of this vector
+     */
+    public final void setHeightRequest(float height)
+    {
+        requestedHeightSum += height;
+        requests++;
+    }
+    
+    /**
+     * Only call this method when all height requests are done. This determines
+     *      the averrage of all height requests and the initial height. This
+     *      local height variable is set to this value.
+     */
+    public void resolveHeight()
+    {
+        height = requestedHeightSum / requests;
     }
     
     /**

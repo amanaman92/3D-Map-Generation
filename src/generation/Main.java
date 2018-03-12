@@ -19,6 +19,8 @@ import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * This class contains basic data needed by the entire game.
@@ -32,10 +34,14 @@ public class Main extends SimpleApplication
     private static final Main MAIN = new Main();
     private static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
     private final static int MAX_FRAMERATE = 100;
+    //private final static InputManager INPUT_MANAGER = new InputManager(null, null, null, null);
+    //Make input manager here and make function getInputManager; OVERRIDE IT.
+
+    private MapAppState mapAppState;
+    private HUDAppState hudAppState;
     
-    private final BaseAppState MAP_APP_STATE = new MapAppState(),
-            HUD_APP_STATE = new HUDAppState();
-    private final BulletAppState BULLET_APP_STATE = new BulletAppState();
+    
+    private BulletAppState BULLET_APP_STATE = new BulletAppState();
     private TerrainQuad terrain;
     private final int MAP_SIZE = 1024;
     private final boolean DEBUG = true;
@@ -76,11 +82,18 @@ public class Main extends SimpleApplication
     @Override
     public void simpleInitApp()
     {   
+         //Note: inputManager had not been initalized before putting the two variables below. As a result, main was null even when trying to
+        //initialize it.
+        hudAppState = new HUDAppState();
+        mapAppState = new MapAppState();
+        //mapAppState.getMain().getChildren();
+        //mapAppState.getMain().getRootNode().detachChild(mapAppState.getRain());
         //Init Global Variables / Data
         initJME3GlobalGUI();
         
         //Init GUI App State
-        stateManager.attach(HUD_APP_STATE);
+        stateManager.attach(hudAppState);
+        
     }
     
     /**
@@ -91,12 +104,43 @@ public class Main extends SimpleApplication
     {
         //Init App States
         stateManager.attach(BULLET_APP_STATE);
-        stateManager.attach(MAP_APP_STATE);
+        stateManager.attach(mapAppState);
         
         //Init Game Variables / Data
         generateProceduralMap();
+        
+        placeTrees(HUDAppState.getTreeNum());
+        //Very interesting; it seems that the getRootNode fails when called from main55. We must see how it works in the MapAppState and how it fails to work here.
+        
         initCamera();
     }
+    
+    //Game Objects
+    private final ArrayList<Tree> TREES = new ArrayList<>();
+    
+    //Random
+    Random gen = new Random();
+    
+    
+    /**
+     * Spawns a num of trees in random location on map
+     * @param num number of trees that spawn
+     */
+    public void placeTrees(int num)  
+    {
+        for(int i = 0; i < num; i++)
+        {
+            Vector3f treeLoc;
+
+            int x = gen.nextInt(MAP_SIZE) - (int) (.5f * MAP_SIZE);
+            int z = gen.nextInt(MAP_SIZE) - (int) (.5f * MAP_SIZE);
+            treeLoc = coordinateOf(x, z);
+
+
+            TREES.add(new Tree(assetManager, rootNode, BULLET_APP_STATE, treeLoc, 1, false));
+        }
+    }
+    
     
     /**
      * Set JME3 global GUI variables
@@ -245,6 +289,7 @@ public class Main extends SimpleApplication
      */
     public Dimension getScreenSize()
     {
+        //System.out.println("Hello! screenSize");
         return SCREEN_SIZE;
     }
     
@@ -255,4 +300,16 @@ public class Main extends SimpleApplication
     {
         return DEBUG;
     }
+    
+    public int getMapSize(){
+        return MAP_SIZE;
+    }
+    
+    /** 
+     * @return reference to tree objects
+     */
+    public ArrayList<Tree> getTREES(){
+        return TREES;
+    }
+
 }

@@ -49,24 +49,6 @@ public enum BaseTerrain
     },
     
     /**
-     * Represents a BaseTerrain with unidirectionall increasing height
-     */
-    SLOPED
-    {
-        /**
-         * @param x An x-coordinate on the terrain heightMap
-         * @param z A z-coordinate on the terrain heightMap
-         * @param sideLenth The lenfth of one side of the map
-         * @return The height of the terrain at (x, z)
-         */
-        @Override
-        public float getHeight(int x, int z, int sideLenth)
-        {
-            return x - z;
-        }
-    },
-    
-    /**
      * Represents a BaseTerrain with a central trough
      */
     VALLEY
@@ -81,8 +63,9 @@ public enum BaseTerrain
         public float getHeight(int x, int z, int sideLenth)
         {
             int halfExtent = sideLenth / 2;
-            return 0 + VectorMath.distance(new MapVector((short) x, (short) z), 
+            float height = 0 + VectorMath.distance(new MapVector((short) x, (short) z), 
                     new MapVector((short) halfExtent, (short) halfExtent));
+            return height > MAX_HEIGHT ? MAX_HEIGHT : height <  MIN_HEIGHT ? MIN_HEIGHT : height;
         }
     },
     
@@ -101,10 +84,14 @@ public enum BaseTerrain
         public float getHeight(int x, int z, int sideLenth)
         {
             int halfExtent = sideLenth / 2;
-            return sideLenth - VectorMath.distance(new MapVector((short) x, (short) z), 
+            float height = MAX_HEIGHT - VectorMath.distance(new MapVector((short) x, (short) z), 
                     new MapVector((short) halfExtent, (short) halfExtent));
+            return height > MAX_HEIGHT ? MAX_HEIGHT : height <  MIN_HEIGHT ? MIN_HEIGHT : height;
         }
     };
+    
+    private static final float MAX_HEIGHT = 400, 
+            MIN_HEIGHT = 200;
     
     /**
      * @param x An x-coordinate on the terrain heightMap
