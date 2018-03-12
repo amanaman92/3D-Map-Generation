@@ -14,6 +14,7 @@ import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
+import com.jme3.audio.AudioNode;
 
 
 /**
@@ -27,7 +28,6 @@ public class MapAppState extends BaseAppState
     private Main main;
     private Node rootNode;
     private ViewPort viewPort;
-    private final AmbientLight AMBIENT_LIGHT = new AmbientLight();
     private final DirectionalLight DIRECTIONAL_LIGHT = new DirectionalLight();
     
     
@@ -37,9 +37,11 @@ public class MapAppState extends BaseAppState
     private float rainEmitterHeight = 50f;
     private int rainParticlesPerSec = 10000;
     
-    
-    
-    
+    private AudioNode rainAudio;
+    private AudioNode fireAudio;
+    private AudioNode natureAudio;
+    private AudioNode windAudio;
+     
     /**
      * This function does basic initialiation of the AppState.
      *      Not called directly from user code.
@@ -57,6 +59,33 @@ public class MapAppState extends BaseAppState
         initSky();
         initLight();
         initRain();
+        initRainAudio();
+        initFireAudio();
+        initNatureAudio();
+        initWindAudio();
+        HUDAppState h = new HUDAppState();
+        switch(HUDAppState.getWeatherIndex()){
+            case 0: natureAudio.play();
+                break;
+                
+            case 1: rainAudio.play();
+                    main.getRootNode().attachChild(rain);
+                    break;
+    
+        }
+        /** Previous way of getting the weather string that was inputted, which led to null pointer exception due to 
+         * HUDAppState not being made. Will attempt to do thru main.
+         * 
+         *System.out.println("Hello! If you see this, you may be about to hit null pointer exception!");
+         //Clearly, HUDAppState is not initalized at this time, which means that there has to be a way to do so.
+         hudAppState = new HUDAppState();
+         System.out.println("hudAppState initialized to HUDAppState program");
+         if(hudAppState.getWeather().equals("Rain")){
+            initRain();
+        } else if(HUDAppState.getWeather().equals("Snow")){
+            
+        } 
+        */
     }
 
     /**
@@ -99,12 +128,9 @@ public class MapAppState extends BaseAppState
      */
     private void initLight() 
     {
-        AMBIENT_LIGHT.setColor(ColorRGBA.White);
-        
         DIRECTIONAL_LIGHT.setDirection(new Vector3f(-1, -1, 0));
         DIRECTIONAL_LIGHT.setColor(ColorRGBA.White);
         
-        rootNode.addLight(AMBIENT_LIGHT);
         rootNode.addLight(DIRECTIONAL_LIGHT);
     }
     
@@ -119,6 +145,13 @@ public class MapAppState extends BaseAppState
         main.getRootNode().attachChild(SkyFactory.createSky(main.getAssetManager(), 
                 "Textures/Skysphere.jpg", SkyFactory.EnvMapType.SphereMap));
     }
+
+
+    
+    //Idea: Use the main from MapAppState to be able to try and detach the child of rain on Main.java
+    //Which is where the hudAppState is located at. When that is done, you'd be able to control rain.
+    //I'd need a method to be able to do so by returning main, then doing the getRootNode and detachChild via main.
+    
     
     /*
      * This method creates rain particles in a sphere centered on the camera.
@@ -136,7 +169,8 @@ public class MapAppState extends BaseAppState
             "Effects/raindrop.png")); // The image is Texture type, white line
     rain.setMaterial(material);  
     rain.setLocalTranslation(main.getCamera().getLocation());
-    rain.getParticleInfluencer().setInitialVelocity(new Vector3f(0.0f, -1.1f, 0.0f));
+    rain.getParticleInfluencer().setInitialVelocity
+        (new Vector3f(0.0f, -1.1f, 0.0f));
     rain.setGravity(0, rainGravity, 0);
     rain.setLowLife(2); // Each particle lasts atleast 2 
     rain.setHighLife(5); // Each particles lasts at most 5
@@ -147,9 +181,56 @@ public class MapAppState extends BaseAppState
     rain.setStartColor(new ColorRGBA(1.0f, 1.0f, 1.0f, 1f)); // Start white
     rain.setEndColor(new ColorRGBA(1f, 1f, 1.0f, 1f)); // End white
     rain.setParticlesPerSec(rainParticlesPerSec); // How many particles per sec  
-    main.getRootNode().attachChild(rain);
+    //main.getRootNode().attachChild(rain); Leave the attachChild part to me please. Once you finish, push it and let me 
+    //me know so that I can get to integrating the code.
     }
 
+    /**
+     * This method creates and sets up the different parts of the audio
+     * for rain so that when it is raining it can be used
+     */
+    private void initRainAudio(){
+    rainAudio = new AudioNode(main.getAssetManager(), "Sounds/Rain.wav", false);
+    rainAudio.setPositional(false); //The noise is not positional
+    rainAudio.setLooping(true); //While the noise is playing it will loop
+    rainAudio.setVolume(2); //Sets the volume of the noise
+    main.getRootNode().attachChild(rainAudio);
+    }
     
+    /**
+     * This method creates and sets up the different parts of the audio
+     * for a tree burning so that when the trees are on fire it can be used
+     */
+    private void initFireAudio(){
+    fireAudio = new AudioNode(main.getAssetManager(), "Sounds/Fire.wav", false);
+    fireAudio.setPositional(false); //The noise is not positional
+    fireAudio.setLooping(true); //The noise loops as it is played
+    fireAudio.setVolume(2); //Sets the volume of the noise
+    main.getRootNode().attachChild(fireAudio);
+    fireAudio.play();
+    }
+    
+    /**
+     * This method creates and sets up the different parts of the audio for a 
+     * nature ambiance sound so that when there is no specific weather it can be used
+     */
+   private void initNatureAudio(){
+    natureAudio = new AudioNode(main.getAssetManager(), "Sounds/Nature Ambiance.wav", false);
+    natureAudio.setPositional(false); //The noise is not positional
+    natureAudio.setLooping(true); //The noise loops as it is played
+    natureAudio.setVolume(2); //Sets the volume of the noise
+    main.getRootNode().attachChild(natureAudio);
+   }
    
+   /**
+    * This method creates and sets up the different parst of the audio
+    * for a wind audio sound so that when there is wind it can be used
+    */
+   private void initWindAudio(){
+       windAudio = new AudioNode(main.getAssetManager(), "Sounds/Wind.wav", false);
+       windAudio.setPositional(false);
+       windAudio.setLooping(true);
+       windAudio.setVolume(2);
+       main.getRootNode().attachChild(windAudio);
+   }
 }
