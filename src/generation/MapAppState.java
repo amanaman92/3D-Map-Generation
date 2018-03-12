@@ -14,7 +14,11 @@ import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
+
+import com.jme3.audio.AudioNode;
 import java.util.ArrayList;
+import java.util.Random;
+
 
 
 /**
@@ -37,6 +41,7 @@ public class MapAppState extends BaseAppState
     private float rainEmitterHeight = 50f;
     private int rainParticlesPerSec = 10000;
     
+
     // variables for snow particles
     private ParticleEmitter snow;
     private float snowGravity = 20f;
@@ -47,8 +52,16 @@ public class MapAppState extends BaseAppState
     // variables for fires
     private ArrayList<ParticleEmitter> fires = new ArrayList<>();
     
-    
 
+    // audio variables
+    private AudioNode rainAudio;
+    private AudioNode fireAudio;
+    private AudioNode natureAudio;
+    private AudioNode windAudio;
+    private AudioNode thunderAudio;
+    private AudioNode birdRainAudio;
+    private AudioNode birdAudio;
+    private AudioNode meadowlarkAudio;
      
     /**
      * This function does basic initialiation of the AppState.
@@ -69,17 +82,54 @@ public class MapAppState extends BaseAppState
         initRain();
         initSnow();
         initTreeFires();
+
+        initRainAudio();
+        initFireAudio();
+        initThunderAudio();
+        initNatureAudio();
+        initWindAudio();
+        initBirdRainAudio();
+        initBirdAudio();
+        initMeadowlarkAudio();
+        Random r = new Random();
+        int ran;
         HUDAppState h = new HUDAppState();
         switch(HUDAppState.getWeatherIndex()){
-            case 0: break;
+            case 0: 
+                ran = r.nextInt(4);
+                if(ran == 0){
+                    natureAudio.play();
+                }
+                else if(ran == 1){
+                    windAudio.play();
+                }
+                else if(ran == 2){
+                    birdAudio.play();
+                }
+                else{
+                    meadowlarkAudio.play();
+                }
+                break;
                 
             case 1: main.getRootNode().attachChild(rain);
+                    ran = r.nextInt(3);
+                    if(ran==0){
+                        rainAudio.play();
+                    }
+                    else if(ran==1){
+                        thunderAudio.play();
+                    }
+                    else{
+                        birdRainAudio.play();
+                    }
                     break;
-            
+           
             case 2: main.getRootNode().attachChild(snow);
                     break;
                     
             case 3: for (ParticleEmitter fire: fires) {
+
+                        fireAudio.play();
                         main.getRootNode().attachChild(fire); 
                     }
                     break;
@@ -94,7 +144,6 @@ public class MapAppState extends BaseAppState
          if(hudAppState.getWeather().equals("Rain")){
 
             initRain();
-
 
         } else if(HUDAppState.getWeather().equals("Snow")){
             
@@ -166,8 +215,8 @@ public class MapAppState extends BaseAppState
     //Which is where the hudAppState is located at. When that is done, you'd be able to control rain.
     //I'd need a method to be able to do so by returning main, then doing the getRootNode and detachChild via main.
     
-    
-    /*
+
+     /*
      * This method creates snow particles in a sphere centered on the camera.
      *
      * inspired by https://jmonkeyengine.github.io/wiki/jme3/beginner/hello_effects.html
@@ -230,6 +279,7 @@ public class MapAppState extends BaseAppState
     rain.setStartColor(new ColorRGBA(1.0f, 1.0f, 1.0f, 1f)); // Start white
     rain.setEndColor(new ColorRGBA(1f, 1f, 1.0f, 1f)); // End white
     rain.setParticlesPerSec(rainParticlesPerSec); // How many particles per sec  
+
     //main.getRootNode().attachChild(rain); 
     //Leave the attachChild part to me please. Once you finish, push it and let me 
     //me know so that I can get to integrating the code.
@@ -275,8 +325,143 @@ public class MapAppState extends BaseAppState
     }
     
 
+    /**
+     * This method is meant to be called during the map initialization.
+     * Iterates through the list of trees and makes a fire at each tree.
+     */
+    private void initTreeFires() {
+        for (Tree tree: main.getTREES()){
+            makeFire(tree.loc(), tree.getScale());
+        }       
+    }
     
+
+    /**
+     * This method creates a fire particle effect
+     * inspired by https://jmonkeyengine.github.io/wiki/jme3/beginner/hello_effects.html
+     * @param vec specifies location of the fire, centered on a tree
+     * @param scale slides the fire up/down depending on the tree scale
+     */
+    private void makeFire(Vector3f vec, float scale) {
+    ParticleEmitter fire =
+            new ParticleEmitter("Emitter", ParticleMesh.Type.Triangle, 30);
+    Material mat_red = new Material(main.getAssetManager(),
+            "Common/MatDefs/Misc/Particle.j3md");
+    mat_red.setTexture("Texture", main.getAssetManager().loadTexture(
+            "Effects/flame.png"));
+    fire.setMaterial(mat_red);
+    fire.setImagesX(2);
+    fire.setImagesY(2);
+    fire.setEndColor(new ColorRGBA(1f, 0f, 0f, 1f));   
+    fire.setStartColor(new ColorRGBA(1f, 1f, 0f, 0.5f));
+    fire.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 20, 0));
+    fire.setLocalTranslation(vec.add(0f, scale* scale * 25, 0f));
+    fire.setStartSize(15f * scale);
+    fire.setEndSize(0f * scale);
+    fire.setGravity(0, 1, 0);
+    fire.setLowLife(1f);
+    fire.setHighLife(3f);
+    fire.getParticleInfluencer().setVelocityVariation(0.3f);
+    fires.add(fire);
+    }
     
+    /**
+     * This method creates and sets up the different parts of the audio
+     * for rain so that when it is raining it can be used
+     */
+    private void initRainAudio(){
+    rainAudio = new AudioNode(main.getAssetManager(), "Sounds/Rain.wav", false);
+    rainAudio.setPositional(false); //The noise is not positional
+    rainAudio.setLooping(true); //While the noise is playing it will loop
+    rainAudio.setVolume(2); //Sets the volume of the noise
+    main.getRootNode().attachChild(rainAudio);
+    }
     
+    /**
+     * This method creates and sets up the different parts of the audio
+     * for a tree burning so that when the trees are on fire it can be used
+     */
+    private void initFireAudio(){
+    fireAudio = new AudioNode(main.getAssetManager(), "Sounds/Fire.wav", false);
+    fireAudio.setPositional(false); //The noise is not positional
+    fireAudio.setLooping(true); //The noise loops as it is played
+    fireAudio.setVolume(2); //Sets the volume of the noise
+    main.getRootNode().attachChild(fireAudio);
+    fireAudio.play();
+    }
+    
+    /**
+     * This method creates and sets up the different parts of the audio for a 
+     * nature ambiance sound so that when there is no specific weather it can be used
+     */
+   private void initNatureAudio(){
+    natureAudio = new AudioNode(main.getAssetManager(), "Sounds/Nature Ambiance.wav", false);
+    natureAudio.setPositional(false); //The noise is not positional
+    natureAudio.setLooping(true); //The noise loops as it is played
+    natureAudio.setVolume(2); //Sets the volume of the noise
+    main.getRootNode().attachChild(natureAudio);
+   }
    
+   /**
+    * This method creates and sets up the different parts of the audio
+    * for a wind audio sound so that when there is wind it can be used
+    */
+   private void initWindAudio(){
+    windAudio = new AudioNode(main.getAssetManager(), "Sounds/Wind.wav", false);
+    windAudio.setPositional(false); //The noise is not positional
+    windAudio.setLooping(true); //The noise loops as it is played
+    windAudio.setVolume(2); //Sets the volume of the noise
+    main.getRootNode().attachChild(windAudio);
+   }
+   
+   /**
+    * This method creates and sets up the different parts of the audio
+    * for a thunder sound so that if there is a thunderstorm it can be used
+    */
+   private void initThunderAudio(){
+       thunderAudio = new AudioNode(main.getAssetManager(), "Sounds/Thunderstorm.wav", false);
+       thunderAudio.setPositional(false); //The noise is not positional
+       thunderAudio.setLooping(true); //The noise loops as it is played
+       thunderAudio.setVolume(2); //Sets the volume of the noise
+       main.getRootNode().attachChild(thunderAudio);
+   }
+
+   
+   /**
+    * This method creates and sets up the different parts of the audio
+    * for a birds in the rain noise so it can be another sound option for the rain
+    */
+   private void initBirdRainAudio(){
+       birdRainAudio = new AudioNode(main.getAssetManager(), "Sounds/BirdRain.wav", false);
+       birdRainAudio.setPositional(false); //The noise is not positional
+       birdRainAudio.setLooping(true); //The noise loops as it is played
+       birdRainAudio.setVolume(2); //Sets the volume of the noise
+       main.getRootNode().attachChild(birdRainAudio);
+   }
+   
+   /**
+    * This method creates and sets up the different parts of the audio
+    * for a bird noise so that there can be a different sound option for
+    * the sunny weather condition
+    */
+   private void initBirdAudio(){
+       birdAudio = new AudioNode(main.getAssetManager(), "Sounds/Bird.wav", false);
+       birdAudio.setPositional(false); //The noise is not positional
+       birdAudio.setLooping(true); //The noise loops as it is played
+       birdAudio.setVolume(2); //Sets the volume of the noise
+       main.getRootNode().attachChild(birdAudio);
+   }
+   
+   /**
+    * This method creates and sets up the different parts of the audio
+    * for a different bird noise so that there can be different sound options
+    * for the sunny weather condition
+    */
+   private void initMeadowlarkAudio(){
+       meadowlarkAudio = new AudioNode(main.getAssetManager(), "Sounds/Meadowlark.wav", false);
+       meadowlarkAudio.setPositional(false); //The noise is not positional
+       meadowlarkAudio.setLooping(true); //The noise loops as it is played
+       meadowlarkAudio.setVolume(2); //Sets the volume of the noise
+       main.getRootNode().attachChild(meadowlarkAudio);
+   }
 }
