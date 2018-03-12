@@ -19,10 +19,10 @@ public class HeightMap
     private final float[] HEIGHT_DATA;
     private final HeightVector[][] HEIGHT_VECTORS;
     private static final float BASE_VALUE = 0,
-            FRACTAL = 20;
+            FRACTAL = 10;
     private final BaseTerrain TERRAIN_TYPE;
     private final int FEATURES = 50,
-            SMOOTHING_FACTOR = 2,
+            SMOOTHING_FACTOR = 1,
             MAP_SIZE;
     private final HeightMapEquation[] MAP_EQS = new HeightMapEquation[FEATURES];
     
@@ -36,7 +36,8 @@ public class HeightMap
         MAP_SIZE = mapSize;
         HEIGHT_DATA = new float[MAP_SIZE * MAP_SIZE];
         HEIGHT_VECTORS = new HeightVector[MAP_SIZE][MAP_SIZE];
-        TERRAIN_TYPE = BaseTerrain.HILLS;
+        BaseTerrain[] terrains = BaseTerrain.values();
+        TERRAIN_TYPE = terrains[RandomUtils.randomInt(0, terrains.length - 1)];
     }
     
     /**
@@ -61,8 +62,8 @@ public class HeightMap
     public void writeHeightMap()
     {
         initTerrain();
-        writeFeatures();
-        refineFeatures();
+        //writeFeatures();
+        //refineFeatures();
         smoothMap();
         createHeightData();
         
